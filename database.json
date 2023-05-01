@@ -7,7 +7,7 @@
       "receiver": 123,
       "receipt_date": "12/03/2023",
       "date_withdrawal": "15/03/2023",
-      "apartment_id": 1
+      "apartment_id": "12"
     },
     {
       "id": 2,
@@ -16,7 +16,7 @@
       "receiver": 985,
       "receipt_date": "20/04/2023",
       "date_withdrawal": "30/05/2023",
-      "apartment_id": 2
+      "apartment_id": "1234B"
     },
     {
       "id": 3,
@@ -25,22 +25,22 @@
       "receiver": 184,
       "receipt_date": "04/06/2023",
       "date_withdrawal": "16/07/2023",
-      "apartment_id": 3
+      "apartment_id": "3"
     }
   ],
   "apartments": [
     {
-      "apartment_id": 1,
+      "apartment_id": "12",
       "user_id": 1,
       "cpf": "846.499.970-46"
     },
     {
-      "apartment_id": 2,
+      "apartment_id": "1234B",
       "user_id": 2,
       "cpf": "790.860.780-28"
     },
     {
-      "apartment_id": 3,
+      "apartment_id": "3",
       "user_id": 3,
       "cpf": "790.860.780-28"
     }
