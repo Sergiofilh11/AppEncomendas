@@ -1,0 +1,71 @@
+{
+  "orders": [
+    {
+      "id": 1,
+      "identity": "Caixa da Kabum",
+      "recipient": 765,
+      "receiver": 123,
+      "receipt_date": "12/03/2023",
+      "date_withdrawal": "15/03/2023",
+      "apartment_id": 1
+    },
+    {
+      "id": 2,
+      "identity": "Teclado Gamer",
+      "recipient": 333,
+      "receiver": 985,
+      "receipt_date": "20/04/2023",
+      "date_withdrawal": "30/05/2023",
+      "apartment_id": 2
+    },
+    {
+      "id": 3,
+      "identity": "Monitor Ultrawide",
+      "recipient": 865,
+      "receiver": 184,
+      "receipt_date": "04/06/2023",
+      "date_withdrawal": "16/07/2023",
+      "apartment_id": 3
+    }
+  ],
+  "apartments": [
+    {
+      "apartment_id": 1,
+      "user_id": 1,
+      "cpf": "846.499.970-46"
+    },
+    {
+      "apartment_id": 2,
+      "user_id": 2,
+      "cpf": "790.860.780-28"
+    },
+    {
+      "apartment_id": 3,
+      "user_id": 3,
+      "cpf": "790.860.780-28"
+    }
+  ],
+  "users": [
+    {
+      "user_id": 1,
+      "name": "John Biden",
+      "access_code": "d3aff16a801b4b7d36b4da1094bee345",
+      "cpf": "846.499.970-46",
+      "user_type": "tenant"
+    },
+    {
+      "user_id": 2,
+      "name": "Michael Jackson",
+      "access_code": "d3aff16a801b4b7d36b4da1094bee345",
+      "cpf": "790.860.780-28",
+      "user_type": "trustee"
+    },
+    {
+      "user_id": 3,
+      "name": "Maicon Douglas",
+      "access_code": "d3aff16a801b4b7d36b4da1094bee345",
+      "cpf": "803.325.300-27",
+      "user_type": "concierge"
+    }
+  ]
+}
