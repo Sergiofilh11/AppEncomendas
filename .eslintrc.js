@@ -11,7 +11,7 @@ module.exports = {
   env: {
     node: true,
     browser: true,
-    'vue/setup-compiler-macros': true
+    'vue/setup-compiler-macros': true,
   },
 
   // Rules order is important, please avoid shuffling them
@@ -26,15 +26,13 @@ module.exports = {
     // 'plugin:vue/vue3-strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
     // 'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
 
-    'airbnb-base'
-    
+    'airbnb-base',
   ],
 
   plugins: [
     // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-files
     // required to lint *.vue files
     'vue',
-    
   ],
 
   globals: {
@@ -47,16 +45,17 @@ module.exports = {
     __QUASAR_SSR_PWA__: 'readonly',
     process: 'readonly',
     Capacitor: 'readonly',
-    chrome: 'readonly'
+    chrome: 'readonly',
   },
 
   // add your custom rules here
   rules: {
-    
     'no-param-reassign': 'off',
     'no-void': 'off',
     'no-nested-ternary': 'off',
     'max-classes-per-file': 'off',
+    indent: 'off',
+    'linebreak-style': 0,
 
     'import/first': 'off',
     'import/named': 'error',
@@ -67,10 +66,10 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
-    
+
     'prefer-promise-reject-errors': 'off',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
-  }
-}
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+  },
+};
