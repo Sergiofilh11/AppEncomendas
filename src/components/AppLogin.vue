@@ -1,45 +1,35 @@
 <template>
   <q-layout class="app-container">
-    <q-header >
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          :icon="$q.dark.isActive ? 'wb_sunny' : 'nightlight_round'"
-          @click="changeTheme"
-        />
-      </q-toolbar>
-    </q-header>
-
     <div class="flex flex-center">
-      <h4>Login</h4>
+      <h2 class="text-h2">Login</h2>
     </div>
 
     <q-form
+      ref="formRef"
       @submit="onSubmit"
       @reset="onReset"
       class="q-gutter-md"
     >
       <q-input
         filled
-        v-model="cpf"
+        v-model="dataLogin.cpf"
         label="Digite o seu CPF"
+        mask="###.###.###-##"
         lazy-rules
         :rules="[
-          val => /^[0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}$/.test(val) || 'CPF inválido'
-          ]"
+          (val) => (val && val.length > 0) || 'O campo não pode ser vazio',
+        ]"
       />
 
       <q-input
         v-if="!isAdmin"
         filled
-        type="string"
-        v-model="apartment"
+        type="number"
+        v-model="dataLogin.apartment"
         label="Digite o número do seu apartamento"
         lazy-rules
         :rules="[
-          val => val !== null && val !== '' || 'O campo não pode ser vazio'
+          (val) => (val && val.length > 0) || 'O campo não pode ser vazio',
         ]"
       />
 
@@ -47,44 +37,70 @@
         v-else
         filled
         type="string"
-        v-model="access_code"
+        v-model="dataLogin.access_code"
         label="Digite o seu codigo de acesso"
         lazy-rules
         :rules="[
-          val => val !== null && val !== '' || 'O campo não pode ser vazio',
+          (val) => (val && val.length > 0) || 'O campo não pode ser vazio',
         ]"
       />
 
       <div class="row flex-center">
-        <q-toggle v-model="isAdmin" label="Acesso restrito" />
+        <q-toggle class="text-h5" v-model="isAdmin" label="Acesso restrito" />
       </div>
 
       <div class="row flex-center">
-        <q-btn label="Entrar" type="submit" color="primary"/>
+        <q-btn label="Entrar" type="submit" color="primary" />
       </div>
     </q-form>
-
   </q-layout>
 </template>
 
 <script>
-import { useQuasar } from 'quasar';
 import { ref } from 'vue';
+import { api } from 'boot/axios';
+import { useRouter } from 'vue-router';
 
 export default {
   setup() {
-    const $q = useQuasar();
-    $q.dark.set(true);
-
+    const router = useRouter();
     const isAdmin = ref(false);
+    const formRef = ref(null);
+    const dataLogin = ref({
+      cpf: '',
+      apartment: '',
+      access_code: '',
+    });
 
     return {
       isAdmin,
+      formRef,
+      dataLogin,
+      router,
       onSubmit() {
+        // eslint-disable-next-line camelcase
+        const { cpf, apartment } = dataLogin.value;
 
-      },
-      changeTheme() {
-        $q.dark.toggle();
+        if (isAdmin.value) {
+          api
+            .get(`/apartments?cpf=${cpf}&id=${apartment}&_expand=user`)
+            .then((e) => {
+              console.log(e.data);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          // eslint-disable-next-line camelcase
+          api
+
+            .get(`/users?cpf=${cpf}&access_code=${dataLogin.value.access_code}`)
+            .then((response) => {
+              if (!response.data.length) {
+                throw new Error('Request failed');
+              }
+            });
+        }
       },
     };
   },
@@ -92,7 +108,11 @@ export default {
 </script>
 
 <style>
-  .app-container {
-    padding: 7px;
-  }
+.app-container {
+  padding: 7px;
+}
+
+.text-h2.text-h5 {
+  font-family: 'Bebas Neue', sans-serif;
+}
 </style>

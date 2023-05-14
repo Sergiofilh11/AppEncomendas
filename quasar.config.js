@@ -28,15 +28,10 @@ module.exports = configure((/* ctx */) => ({
   // app boot file (/src/boot)
   // --> boot files are part of "main.js"
   // https://v2.quasar.dev/quasar-cli/boot-files
-  boot: [
-
-    'axios',
-  ],
+  boot: ['axios'],
 
   // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
-  css: [
-    'app.scss',
-  ],
+  css: ['app.scss'],
 
   // https://github.com/quasarframework/quasar/tree/dev/extras
   extras: [
@@ -104,7 +99,7 @@ module.exports = configure((/* ctx */) => ({
     // directives: [],
 
     // Quasar plugins
-    plugins: [],
+    plugins: ['Notify', 'BottomSheet'],
   },
 
   // animations: 'all', // --- includes all animations
@@ -179,13 +174,11 @@ module.exports = configure((/* ctx */) => ({
 
     packager: {
       // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
-
       // OS X / Mac App Store
       // appBundleId: '',
       // appCategoryType: '',
       // osxSign: '',
       // protocol: 'myapp://path',
-
       // Windows only
       // win32metadata: { ... }
     },
@@ -199,9 +192,7 @@ module.exports = configure((/* ctx */) => ({
 
   // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex
   bex: {
-    contentScripts: [
-      'my-content-script',
-    ],
+    contentScripts: ['my-content-script'],
 
     // extendBexScriptsConf (esbuildConf) {}
     // extendBexManifestJson (json) {}

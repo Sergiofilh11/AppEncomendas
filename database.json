@@ -3,69 +3,138 @@
     {
       "id": 1,
       "identity": "Caixa da Kabum",
-      "recipient": 765,
-      "receiver": 123,
+      "recipient": 2,
+      "userId": 10,
       "receipt_date": "12/03/2023",
       "date_withdrawal": "15/03/2023",
-      "apartment_id": "12"
+      "apartmentId": "12"
     },
     {
       "id": 2,
       "identity": "Teclado Gamer",
-      "recipient": 333,
-      "receiver": 985,
+      "recipient": 2,
+      "userId": 4,
       "receipt_date": "20/04/2023",
       "date_withdrawal": "30/05/2023",
-      "apartment_id": "1234B"
+      "apartmentId": "33B"
     },
     {
       "id": 3,
       "identity": "Monitor Ultrawide",
-      "recipient": 865,
-      "receiver": 184,
+      "recipient": 3,
+      "userId": 5,
       "receipt_date": "04/06/2023",
       "date_withdrawal": "16/07/2023",
-      "apartment_id": "3"
+      "apartmentId": "45C"
     }
   ],
   "apartments": [
     {
-      "apartment_id": "12",
-      "user_id": 1,
+      "id": "12",
+      "userId": 1,
       "cpf": "846.499.970-46"
     },
     {
-      "apartment_id": "1234B",
-      "user_id": 2,
+      "id": "1234B",
+      "userId": 2,
       "cpf": "790.860.780-28"
     },
     {
-      "apartment_id": "3",
-      "user_id": 3,
+      "id": "3",
+      "userId": 3,
       "cpf": "790.860.780-28"
+    },
+    {
+      "id": "33B",
+      "userId": 4,
+      "cpf": "846.489.970-46"
+    },
+    {
+      "id": "45C",
+      "userId": 5,
+      "cpf": "846.439.970-46"
+    },
+    {
+      "userId": 10,
+      "cpf": "255.226.250-31",
+      "id": "105B"
+    },
+    {
+      "userId": 10,
+      "cpf": "255.226.250-31",
+      "id": "303A"
     }
   ],
   "users": [
     {
-      "user_id": 1,
+      "id": 1,
       "name": "John Biden",
       "access_code": "d3aff16a801b4b7d36b4da1094bee345",
       "cpf": "846.499.970-46",
       "user_type": "tenant"
     },
     {
-      "user_id": 2,
+      "id": 4,
+      "name": "John Cena",
+      "access_code": "d3aff16a801b4b7d36b4da1094bee345",
+      "cpf": "846.489.970-46",
+      "user_type": "tenant"
+    },
+    {
+      "id": 5,
+      "name": "Joana Camargo",
+      "access_code": "d3aff16a801b4b7d36b4da1094bee345",
+      "cpf": "846.439.970-46",
+      "user_type": "tenant"
+    },
+    {
+      "id": 2,
       "name": "Michael Jackson",
       "access_code": "d3aff16a801b4b7d36b4da1094bee345",
       "cpf": "790.860.780-28",
       "user_type": "trustee"
     },
     {
-      "user_id": 3,
+      "id": 3,
       "name": "Maicon Douglas",
       "access_code": "d3aff16a801b4b7d36b4da1094bee345",
       "cpf": "803.325.300-27",
       "user_type": "concierge"
+    },
+    {
+      "name": "Natã Romão",
+      "cpf": "232.377.790-40",
+      "user_type": "tenant",
+      "access_code": "",
+      "id": 6
+    },
+    {
+      "name": "Teste",
+      "cpf": "232.377.790-40",
+      "user_type": "tenant",
+      "access_code": "",
+      "id": 7
+    },
+    {
+      "name": "Natã Teste",
+      "cpf": "035.917.620-83",
+      "user_type": "tenant",
+      "access_code": "",
+      "id": 8
+    },
+    {
+      "name": "Natã Romão",
+      "cpf": "775.870.810-20",
+      "user_type": "tenant",
+      "access_code": "",
+      "id": 9
+    },
+    {
+      "name": "Natã Romão",
+      "cpf": "255.226.250-31",
+      "user_type": "tenant",
+      "access_code": "",
+      "id": 10
     }
   ]
 }
