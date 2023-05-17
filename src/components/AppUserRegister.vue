@@ -76,11 +76,11 @@ const options = ref([
     label: 'Inquilino',
   },
   {
-    value: 'trustee',
+    value: 'concierge',
     label: 'Porteiro',
   },
   {
-    value: 'trustee',
+    value: 'syndicate',
     label: 'Sindico',
   },
 ]);

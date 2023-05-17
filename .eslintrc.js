@@ -51,6 +51,7 @@ module.exports = {
   // add your custom rules here
   rules: {
     'no-param-reassign': 'off',
+    'implicit-arrow-linebreak': 'off',
     'no-void': 'off',
     'no-nested-ternary': 'off',
     'max-classes-per-file': 'off',

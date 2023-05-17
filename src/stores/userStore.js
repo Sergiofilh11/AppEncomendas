@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 
 export const userStore = defineStore('userStore', {
+  persist: true,
   state: () => ({
-    userData: {
-      id: 1,
-    },
+    userData: null,
+    apartmentId: null,
     userToken: null,
     tokenExpiration: null,
   }),
@@ -16,6 +16,14 @@ export const userStore = defineStore('userStore', {
   },
 
   actions: {
-    // SET_USER_DATA(state, payload) {},
+    SET_USER_DATA(userObject) {
+      this.userData = userObject;
+    },
+    SET_APARTMENT_ID(id) {
+      this.apartmentId = id;
+    },
+    SET_USER_TOKEN(userToken) {
+      this.userToken = userToken;
+    },
   },
 });

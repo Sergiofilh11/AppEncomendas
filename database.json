@@ -26,6 +26,33 @@
       "receipt_date": "04/06/2023",
       "date_withdrawal": "16/07/2023",
       "apartmentId": "45C"
+    },
+    {
+      "id": 4,
+      "identity": "Camisa Bugginho",
+      "recipient": 11,
+      "userId": 1,
+      "receipt_date": "10/06/2023",
+      "date_withdrawal": "20/07/2023",
+      "apartmentId": "12e"
+    },
+    {
+      "id": 5,
+      "identity": "Carregador portátil",
+      "recipient": 10,
+      "userId": 1,
+      "receipt_date": "20/10/2023",
+      "date_withdrawal": "12/11/2023",
+      "apartmentId": "56e"
+    },
+    {
+      "id": 6,
+      "identity": "Cabo Tipo C",
+      "recipient": 9,
+      "userId": 1,
+      "receipt_date": "01/04/2023",
+      "date_withdrawal": "04/04/2023",
+      "apartmentId": "99"
     }
   ],
   "apartments": [
@@ -40,7 +67,7 @@
       "cpf": "790.860.780-28"
     },
     {
-      "id": "3",
+      "id": "32A",
       "userId": 3,
       "cpf": "790.860.780-28"
     },
@@ -63,6 +90,21 @@
       "userId": 10,
       "cpf": "255.226.250-31",
       "id": "303A"
+    },
+    {
+      "userId": 11,
+      "cpf": "080.624.135-78",
+      "id": "12e"
+    },
+    {
+      "userId": 11,
+      "cpf": "080.624.135-78",
+      "id": "99"
+    },
+    {
+      "userId": 11,
+      "cpf": "080.624.135-78",
+      "id": "56e"
     }
   ],
   "users": [
@@ -92,7 +134,7 @@
       "name": "Michael Jackson",
       "access_code": "d3aff16a801b4b7d36b4da1094bee345",
       "cpf": "790.860.780-28",
-      "user_type": "trustee"
+      "user_type": "syndicate"
     },
     {
       "id": 3,
@@ -135,6 +177,13 @@
       "user_type": "tenant",
       "access_code": "",
       "id": 10
+    },
+    {
+      "name": "Ivan Santos",
+      "cpf": "080.624.135-78",
+      "user_type": "concierge",
+      "access_code": "",
+      "id": 11
     }
   ]
 }

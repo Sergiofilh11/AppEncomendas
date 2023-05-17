@@ -1,7 +1,7 @@
 <template>
   <q-layout class="app-container">
     <div class="flex flex-center">
-      <h2 class="text-h2">Login</h2>
+      <h2 class="text-h2 text-bold">Login</h2>
     </div>
 
     <q-form
@@ -24,7 +24,7 @@
       <q-input
         v-if="!isAdmin"
         filled
-        type="number"
+        type="string"
         v-model="dataLogin.apartment"
         label="Digite o número do seu apartamento"
         lazy-rules
@@ -37,7 +37,7 @@
         v-else
         filled
         type="string"
-        v-model="dataLogin.access_code"
+        v-model="dataLogin.accessCode"
         label="Digite o seu codigo de acesso"
         lazy-rules
         :rules="[
@@ -56,55 +56,81 @@
   </q-layout>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 import { api } from 'boot/axios';
 import { useRouter } from 'vue-router';
+import { userStore } from 'src/stores/userStore';
+import { sign } from 'fake-jwt-sign';
+import { useQuasar } from 'quasar';
 
-export default {
-  setup() {
-    const router = useRouter();
-    const isAdmin = ref(false);
-    const formRef = ref(null);
-    const dataLogin = ref({
-      cpf: '',
-      apartment: '',
-      access_code: '',
-    });
+const $q = useQuasar();
+const router = useRouter();
+const isAdmin = ref(false);
+const formRef = ref(null);
+const dataLogin = ref({
+  cpf: '',
+  apartment: '',
+  accessCode: '',
+});
+const store = userStore();
 
-    return {
-      isAdmin,
-      formRef,
-      dataLogin,
-      router,
-      onSubmit() {
-        // eslint-disable-next-line camelcase
-        const { cpf, apartment } = dataLogin.value;
+function getUrlToSend() {
+  const { cpf, apartment, accessCode } = dataLogin.value;
+  if (isAdmin.value) {
+    return `/users?cpf=${cpf}&access_code=${accessCode}`;
+  }
 
-        if (isAdmin.value) {
-          api
-            .get(`/apartments?cpf=${cpf}&id=${apartment}&_expand=user`)
-            .then((e) => {
-              console.log(e.data);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        } else {
-          // eslint-disable-next-line camelcase
-          api
+  return `/apartments?cpf=${cpf}&id=${apartment}&_expand=user`;
+}
 
-            .get(`/users?cpf=${cpf}&access_code=${dataLogin.value.access_code}`)
-            .then((response) => {
-              if (!response.data.length) {
-                throw new Error('Request failed');
-              }
-            });
+function buildJWTToken(payload) {
+  return sign({ isAutheticated: true, ...payload }, 'BIG_SECRET', {
+    expiresIn: '1h',
+  });
+}
+
+function onSubmit() {
+  api
+    .get(getUrlToSend())
+    .then((response) => {
+      if (!response.data.length) {
+        throw new Error('Usuário não encontrado!');
+      }
+
+      const data = response.data[0];
+      const user = data?.user || data;
+      const id = data?.id;
+
+      if (isAdmin.value) {
+        if (['tenant', 'syndicate'].includes(user.user_type)) {
+          throw new Error('Login não autorizado.');
         }
-      },
-    };
-  },
-};
+      }
+
+      store.SET_USER_DATA(user);
+
+      if (id) {
+        store.SET_APARTMENT_ID(id);
+      }
+
+      const authToken = buildJWTToken({ id: user.id, cpf: user.cpf });
+      store.SET_USER_TOKEN(authToken);
+
+      const redirectBy = isAdmin.value ? 'list-user' : 'orders';
+      router.push({ name: redirectBy });
+    })
+    .catch((e) => {
+      $q.notify({
+        color: 'negative',
+        textColor: 'white',
+        icon: 'report_problem',
+        position: 'top',
+        timeout: 4000,
+        message: e.message,
+      });
+    });
+}
 </script>
 
 <style>

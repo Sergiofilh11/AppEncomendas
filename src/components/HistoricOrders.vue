@@ -1,37 +1,14 @@
 <template>
   <div class="container">
     <div class="main">
-      <h2 class="text-h2">Histórico de Ordens</h2>
-      <q-card-section
-        class="my-card text-white"
-        v-for="order in orders"
-        :key="order"
-      >
-        <q-card-section>
-          <div class="text-h6">{{ order.identity }}</div>
-        </q-card-section>
-        <q-list dense bordered padding class="rounded-borders">
-          <q-item clickable v-ripple>
-            <q-item-section
-              >Recebedor: {{ order.recipient.name }}</q-item-section
-            >
-          </q-item>
-
-          <q-item clickable v-ripple>
-            <q-item-section
-              >Data de recebimento: {{ order.receipt_date }}</q-item-section
-            >
-          </q-item>
-
-          <q-item clickable v-ripple>
-            <q-item-section
-              >Data de retirada: {{ order.date_withdrawal }}</q-item-section
-            >
-          </q-item>
-        </q-list>
-      </q-card-section>
-
-      <q-separator dark />
+      <div class="q-pa-md">
+        <q-table
+          title="Histórico de Ordens"
+          :rows="rows"
+          :columns="columns"
+          row-key="name"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -41,48 +18,88 @@ import { defineComponent, onMounted, ref } from 'vue';
 import { api } from 'boot/axios';
 // import { userStore } from 'stores/userStore';
 
+const columns = [
+  {
+    name: 'Produto',
+    required: true,
+    label: 'Produto',
+    align: 'left',
+    field: (rows) => rows.identity,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: 'Recebedor',
+    required: true,
+    label: 'Recebedor',
+    align: 'left',
+    field: (rows) => rows.recipient.name,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: 'Data de recebimento',
+    required: true,
+    label: 'Data de recebimento',
+    align: 'left',
+    field: (rows) => rows.receipt_date,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: 'Data de retirada',
+    required: true,
+    label: 'Data de retirada',
+    align: 'left',
+    field: (rows) => rows.date_withdrawal,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+];
+
 export default defineComponent({
   name: 'HistoricOrders',
   setup() {
     // const store = userStore();
-    const orders = ref([]);
+    const rows = ref([]);
     const users = ref([]);
+    const formatDate = (date) => {
+      const parsedDate = new Date(date);
+      const day = parsedDate.getDate();
+      const month = parsedDate.getMonth() + 1;
+      const year = parsedDate.getFullYear();
+      return `${day.toString().padStart(2, '0')}/${month
+        .toString()
+        .padStart(2, '0')}/${year.toString()}`;
+    };
+
     onMounted(() => {
       api.get('/orders').then((response) => {
-        orders.value = response.data;
+        rows.value = response.data;
 
         response.data.forEach((item, index) => {
           api.get(`/users/${item.recipient}`).then((res) => {
-            orders.value[index].recipient = res.data;
+            rows.value[index].recipient = res.data;
           });
         });
       });
     });
 
     return {
-      orders,
       users,
+      formatDate,
+      columns,
+      rows,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-.text-h2 {
-  margin: 35px;
-}
-
-.my-card {
-  left: 30px;
-  margin: 10px;
-  width: 33.33%;
-  max-width: 300px;
-  border-radius: 5px;
-  display: inline-block;
-  background: radial-gradient(circle, #35a2ff 0%, #014a88 80%);
-}
 .main {
   flex-wrap: wrap;
   border: none;
+  width: 90%;
+  margin: 0 auto;
 }
 </style>
