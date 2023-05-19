@@ -16,14 +16,17 @@
 <script>
 import { defineComponent } from 'vue';
 import { useQuasar } from 'quasar';
+import { userStore } from 'src/stores/userStore';
 
 export default defineComponent({
   name: 'App',
   setup() {
     const $q = useQuasar();
+    const store = userStore();
 
     return {
       $q,
+      store,
       changeTheme() {
         $q.dark.toggle();
       },

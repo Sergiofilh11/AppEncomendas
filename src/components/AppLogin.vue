@@ -103,7 +103,7 @@ function onSubmit() {
       const id = data?.id;
 
       if (isAdmin.value) {
-        if (['tenant', 'syndicate'].includes(user.user_type)) {
+        if (['tenant'].includes(user.user_type)) {
           throw new Error('Login não autorizado.');
         }
       }

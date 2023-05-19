@@ -67,11 +67,6 @@
       "cpf": "790.860.780-28"
     },
     {
-      "id": "32A",
-      "userId": 3,
-      "cpf": "790.860.780-28"
-    },
-    {
       "id": "33B",
       "userId": 4,
       "cpf": "846.489.970-46"
@@ -105,27 +100,42 @@
       "userId": 11,
       "cpf": "080.624.135-78",
       "id": "56e"
+    },
+    {
+      "user_id": 12,
+      "cpf": "123.456.789-09",
+      "id": "ABC12"
+    },
+    {
+      "user_id": 12,
+      "cpf": "123.456.789-09",
+      "id": "AXC23"
+    },
+    {
+      "user_id": 12,
+      "cpf": "123.456.789-09",
+      "id": "ASX12"
     }
   ],
   "users": [
     {
       "id": 1,
       "name": "John Biden",
-      "access_code": "d3aff16a801b4b7d36b4da1094bee345",
+      "access_code": "",
       "cpf": "846.499.970-46",
       "user_type": "tenant"
     },
     {
       "id": 4,
       "name": "John Cena",
-      "access_code": "d3aff16a801b4b7d36b4da1094bee345",
+      "access_code": "",
       "cpf": "846.489.970-46",
       "user_type": "tenant"
     },
     {
       "id": 5,
       "name": "Joana Camargo",
-      "access_code": "d3aff16a801b4b7d36b4da1094bee345",
+      "access_code": "",
       "cpf": "846.439.970-46",
       "user_type": "tenant"
     },
@@ -145,7 +155,7 @@
     },
     {
       "name": "Natã Romão",
-      "cpf": "232.377.790-40",
+      "cpf": "233.377.790-40",
       "user_type": "tenant",
       "access_code": "",
       "id": 6
@@ -158,20 +168,6 @@
       "id": 7
     },
     {
-      "name": "Natã Teste",
-      "cpf": "035.917.620-83",
-      "user_type": "tenant",
-      "access_code": "",
-      "id": 8
-    },
-    {
-      "name": "Natã Romão",
-      "cpf": "775.870.810-20",
-      "user_type": "tenant",
-      "access_code": "",
-      "id": 9
-    },
-    {
       "name": "Natã Romão",
       "cpf": "255.226.250-31",
       "user_type": "tenant",
@@ -182,8 +178,15 @@
       "name": "Ivan Santos",
       "cpf": "080.624.135-78",
       "user_type": "concierge",
-      "access_code": "",
+      "access_code": "d3aff16a801b4b7d36b4da1094bee345",
       "id": 11
+    },
+    {
+      "name": "Natã",
+      "cpf": "123.456.789-09",
+      "user_type": "tenant",
+      "access_code": "",
+      "id": 12
     }
   ]
 }

@@ -63,6 +63,8 @@
 import { useQuasar } from 'quasar';
 import { api } from 'src/boot/axios';
 import { ref } from 'vue';
+import { userStore } from 'src/stores/userStore';
+import { generateMd5 } from '../services/generateMd5';
 
 const $q = useQuasar();
 
@@ -70,6 +72,7 @@ const name = ref(null);
 const cpf = ref(null);
 const modelAdd = ref(null);
 const clientType = ref(null);
+const store = userStore();
 const options = ref([
   {
     value: 'tenant',
@@ -79,20 +82,27 @@ const options = ref([
     value: 'concierge',
     label: 'Porteiro',
   },
-  {
-    value: 'syndicate',
-    label: 'Sindico',
-  },
 ]);
 
+const userData = store.getUserData;
+if (userData.user_type === 'syndicate') {
+  options.value.push({
+    value: 'syndicate',
+    label: 'Sindico',
+  });
+}
+
 async function onSubmit() {
+  const accessCode = clientType.value === 'tenant' ? '' : generateMd5();
+  const payload = {
+    name: name.value,
+    cpf: cpf.value,
+    user_type: clientType.value,
+    access_code: accessCode,
+  };
+
   await api
-    .post('/users', {
-      name: name.value,
-      cpf: cpf.value,
-      user_type: clientType.value,
-      access_code: '',
-    })
+    .post('/users', payload)
     .then(async (response) => {
       if (![200, 201].includes(response.status)) {
         throw new Error('Falha ao criar o usuário, tente novamente');
