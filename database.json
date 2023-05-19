@@ -14,9 +14,27 @@
       "identity": "Teclado Gamer",
       "recipient": 2,
       "userId": 4,
-      "receipt_date": "20/04/2023",
-      "date_withdrawal": "30/05/2023",
+      "receipt_date": "06/06/2023",
+      "date_withdrawal": null,
       "apartmentId": "33B"
+    },
+    {
+      "id": 8,
+      "identity": "Monitor Gamer",
+      "recipient": 2,
+      "userId": 11,
+      "receipt_date": "10/06/2023",
+      "date_withdrawal": null,
+      "apartmentId": "12e"
+    },
+    {
+      "id": 9,
+      "identity": "Mousepad Gamer",
+      "recipient": 2,
+      "userId": 11,
+      "receipt_date": "10/06/2023",
+      "date_withdrawal": null,
+      "apartmentId": "12e"
     },
     {
       "id": 3,
@@ -24,16 +42,16 @@
       "recipient": 3,
       "userId": 5,
       "receipt_date": "04/06/2023",
-      "date_withdrawal": "16/07/2023",
+      "date_withdrawal": "04/06/2023",
       "apartmentId": "45C"
     },
     {
       "id": 4,
       "identity": "Camisa Bugginho",
       "recipient": 11,
-      "userId": 1,
+      "userId": 11,
       "receipt_date": "10/06/2023",
-      "date_withdrawal": "20/07/2023",
+      "date_withdrawal": "10/06/2023",
       "apartmentId": "12e"
     },
     {
@@ -42,7 +60,7 @@
       "recipient": 10,
       "userId": 1,
       "receipt_date": "20/10/2023",
-      "date_withdrawal": "12/11/2023",
+      "date_withdrawal": null,
       "apartmentId": "56e"
     },
     {
@@ -51,8 +69,45 @@
       "recipient": 9,
       "userId": 1,
       "receipt_date": "01/04/2023",
-      "date_withdrawal": "04/04/2023",
+      "date_withdrawal": null,
       "apartmentId": "99"
+    },
+    {
+      "id": 7,
+      "identity": "Camisa Javeiro",
+      "recipient": 11,
+      "userId": 11,
+      "receipt_date": "30/10/2023",
+      "date_withdrawal": null,
+      "apartmentId": "12e"
+    },
+    {
+      "identity": "Caixa de som",
+      "recipient": 11,
+      "receipt_date": "18/05/2023",
+      "apartmentId": "Ivan Santos",
+      "id": 10
+    },
+    {
+      "identity": "Bonequinho",
+      "recipient": 11,
+      "receipt_date": "18/05/2023",
+      "apartmentId": "Ivan Santos",
+      "id": 11
+    },
+    {
+      "identity": "  ",
+      "recipient": 11,
+      "receipt_date": "18/05/2023",
+      "apartmentId": "Ivan Santos",
+      "id": 12
+    },
+    {
+      "identity": "  asdada",
+      "recipient": 11,
+      "receipt_date": "18/05/2023",
+      "apartmentId": "Ivan Santos",
+      "id": 13
     }
   ],
   "apartments": [
@@ -115,6 +170,16 @@
       "user_id": 12,
       "cpf": "123.456.789-09",
       "id": "ASX12"
+    },
+    {
+      "user_id": 13,
+      "cpf": "123.456.789-09",
+      "id": "123AB"
+    },
+    {
+      "user_id": 13,
+      "cpf": "123.456.789-09",
+      "id": "546CD"
     }
   ],
   "users": [
@@ -187,6 +252,13 @@
       "user_type": "tenant",
       "access_code": "",
       "id": 12
+    },
+    {
+      "name": "User teste",
+      "cpf": "123.456.789-09",
+      "user_type": "concierge",
+      "access_code": "eeaf69fa9acb7826a022b3ea303e7640",
+      "id": 13
     }
   ]
 }

@@ -111,7 +111,7 @@ async function onSubmit() {
         await api.post('/apartments', {
           user_id: response.data.id,
           cpf: cpf.value,
-          id: item,
+          id: item.toUpperCase(),
         });
       });
 

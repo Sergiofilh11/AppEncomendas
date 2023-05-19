@@ -5,6 +5,7 @@
     <div class="q-pa-md">
       <div class="q-container-flex">
         <q-table
+          no-data-label="Nenhum resultado encontrado."
           title="Listagem de encomendas não retiradas"
           :rows="rows"
           :columns="columns"
@@ -12,13 +13,13 @@
         />
       </div>
     </div>
-    <q-btn @click="logout()">SAIR</q-btn>
   </div>
 </template>
 
 <script>
 import { onMounted, ref } from 'vue';
 import { api } from 'boot/axios';
+import { userStore } from 'stores/userStore';
 
 const columns = [
   {
@@ -33,7 +34,7 @@ const columns = [
   {
     name: 'apartament',
     required: true,
-    label: 'Apartament',
+    label: 'Apartamento',
     align: 'left',
     field: (row) => row.apartmentId,
     format: (val) => `${val}`,
@@ -42,7 +43,7 @@ const columns = [
   {
     name: 'date-reciviement',
     required: true,
-    label: 'Data de retirada',
+    label: 'Data do recebimento',
     align: 'left',
     field: (row) => row.receipt_date,
     format: (val) => `${val}`,
@@ -52,10 +53,16 @@ const columns = [
 export default {
   setup() {
     const rows = ref([]);
+    const store = userStore();
+    const apartmentId = store.getApartmentId;
     onMounted(async () => {
+      const urlToSend = '/orders?_sort=receipt_date&_order=desc';
       try {
-        const response = await api.get('/orders');
-        rows.value = response.data;
+        const response = await api.get(urlToSend);
+        rows.value = response.data.filter(
+          (order) =>
+            order.apartmentId === apartmentId && order.date_withdrawal === null,
+        );
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Erro ao carregar os encomendas:', error);
@@ -69,10 +76,10 @@ export default {
   computed: {
     filteredEncomendas() {
       return this.encomendas.filter(
-        (encomenda) => encomenda.identity
+        (encomenda) =>
+          encomenda.identity
             .toLowerCase()
-            .includes(this.searchText.toLowerCase())
-          ,
+            .includes(this.searchText.toLowerCase()),
         // eslint-disable-next-line function-paren-newline
       );
     },
@@ -86,10 +93,6 @@ export default {
     },
   },
   methods: {
-    logout() {
-      localStorage.removeItem('userStore');
-      this.$router.push('/login');
-    },
     filterEncomendas() {
       this.page = 1;
       this.$refs.searchInput.blur();

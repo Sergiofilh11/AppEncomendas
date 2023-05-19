@@ -7,6 +7,8 @@
           :rows="rows"
           :columns="columns"
           row-key="name"
+          no-data-label="Nenhum resultado encontrado."
+          rows-per-page-label="Itens por página"
         />
       </div>
     </div>
@@ -16,7 +18,7 @@
 <script>
 import { defineComponent, onMounted, ref } from 'vue';
 import { api } from 'boot/axios';
-// import { userStore } from 'stores/userStore';
+import { userStore } from 'stores/userStore';
 
 const columns = [
   {
@@ -33,7 +35,7 @@ const columns = [
     required: true,
     label: 'Recebedor',
     align: 'left',
-    field: (rows) => rows.recipient.name,
+    field: (rows) => rows.user.name,
     format: (val) => `${val}`,
     sortable: true,
   },
@@ -60,7 +62,8 @@ const columns = [
 export default defineComponent({
   name: 'HistoricOrders',
   setup() {
-    // const store = userStore();
+    const store = userStore();
+    const apartmentId = store.getApartmentId;
     const rows = ref([]);
     const users = ref([]);
     const formatDate = (date) => {
@@ -74,14 +77,17 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      api.get('/orders').then((response) => {
-        rows.value = response.data;
+      let urlToSend = '/orders?_expand=user';
+      if (apartmentId) {
+        urlToSend += `&apartmentId=${apartmentId}`;
+      }
 
-        response.data.forEach((item, index) => {
-          api.get(`/users/${item.recipient}`).then((res) => {
-            rows.value[index].recipient = res.data;
+      api.get(urlToSend).then((response) => {
+        response.data
+          .filter((item) => item.date_withdrawal)
+          .forEach((item) => {
+            rows.value.push(item);
           });
-        });
       });
     });
 

@@ -12,6 +12,7 @@ export const userStore = defineStore('userStore', {
   getters: {
     getUserData: (state) => state.userData,
     getUserToken: (state) => state.userToken,
+    getApartmentId: (state) => state.apartmentId,
     getTokenExpiration: (state) => state.tokenExpiration,
   },
 

@@ -1,26 +1,25 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-container-flex">
+    <div class="q-container-flex-auto-width">
       <q-table
         title="Listagem de usuários"
         :rows="rows"
         :columns="columns"
         row-key="users"
         color="primary"
+        no-data-label="Carregando..."
+        hide-pagination
         :loading="loading"
+        :rows-per-page-options="[0]"
+        :virtual-scroll-item-size="12"
+        :virtual-scroll-sticky-size-start="12"
+        virtual-scroll
+        @virtual-scroll="onScroll"
+        v-model:pagination="pagination"
       />
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.q-container-flex {
-  flex-wrap: wrap;
-  border: none;
-  width: 80%;
-  margin: 0 auto;
-}
-</style>
 
 <script>
 import { api } from 'boot/axios';
@@ -42,6 +41,15 @@ const columns = [
     label: 'CPF',
     align: 'left',
     field: (row) => row.cpf,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: 'Apartamento',
+    required: false,
+    label: 'N° apartamento',
+    align: 'center',
+    field: (row) => row.id,
     format: (val) => `${val}`,
     sortable: true,
   },
@@ -69,6 +77,8 @@ export default {
     return {
       currentPage: 1,
       rowsPerPage: 5,
+      style: 'max-width: 50px',
+      headerStyle: 'max-width: 50px',
     };
   },
   methods: {
@@ -78,6 +88,8 @@ export default {
   },
   setup() {
     const rows = ref([]);
+    const nextPage = ref(2);
+    const loading = ref(false);
     onMounted(async () => {
       try {
         const response = await api.get('/users');
@@ -89,6 +101,17 @@ export default {
     return {
       columns,
       rows,
+
+      nextPage,
+      loading,
+
+      onScroll({ to }) {
+        const lastIndex = rows.value.length - 1;
+
+        if (loading.value !== true && nextPage.value < 1 && to === lastIndex) {
+          loading.value = true;
+        }
+      },
     };
   },
 };

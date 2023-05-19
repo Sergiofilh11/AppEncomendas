@@ -4,37 +4,35 @@
     <q-form @submit="onSubmit" class="q-gutter-md q-mt-xl">
       <q-input
         filled
-        v-model="name"
+        v-model="productDescription"
         label="Qual o produto"
         hint="Tipo do Produto"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'O campo é obrigatório.']"
-      />
-
-      <q-input
-        v-model="apt"
-        filled
-        class="q-my-md"
-        label="Destinatario"
-        hint="Número do apartamento"
-        mask="#####"
-        lazy-rules
         :rules="[
-          (val) => (val !== null && val !== '') || 'O campo é obrigatório.',
-          (val) => validateAPT(val) || 'Apartamento inválido',
+          (val) => (val.trim() && val.length > 0) || 'O campo é obrigatório.',
+          ,
+          ,
         ]"
       />
 
+      <q-select
+        filled
+        v-model="selectedUser"
+        :options="apartmentData"
+        hint="Selecione o apartamento"
+        :rules="[(val) => val.trim() !== '' || 'O campo é obrigatório.']"
+      />
+
       <q-input
         filled
-        v-model="name"
+        v-model="receptor"
         label="Recebedor"
         hint="Quem recebeu o produto"
         lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'O campo é obrigatório.']"
+        disable
       />
       <div class="flex flex-center q-mt-xl">
-        <button type="button" class="btn btn-success">Cadastrar</button>
+        <q-btn type="submit" color="primary" label="Cadastrar" />
       </div>
     </q-form>
   </div>
@@ -43,40 +41,49 @@
 <script setup>
 import { useQuasar } from 'quasar';
 import { api } from 'src/boot/axios';
-import { ref } from 'vue';
+import { userStore } from 'src/stores/userStore';
+import { onMounted, ref } from 'vue';
 
 const $q = useQuasar();
+const store = userStore();
+const userData = store.getUserData;
+const productDescription = ref(null);
+const selectedUser = ref(null);
+const apartmentData = ref([]);
+const receptor = ref(null);
 
-const name = ref(null);
-const cpf = ref(null);
-const modelAdd = ref(null);
-const clientType = ref(null);
+function getDate() {
+  const parsedDate = new Date();
+  const day = parsedDate.getDate();
+  const month = parsedDate.getMonth() + 1;
+  const year = parsedDate.getFullYear();
+  return `${day.toString().padStart(2, '0')}/${month
+    .toString()
+    .padStart(2, '0')}/${year.toString()}`;
+}
+
 async function onSubmit() {
   await api
-    .post('/users', {
-      name: name.value,
-      cpf: cpf.value,
-      user_type: clientType.value,
-      access_code: '',
+    .post('/orders', {
+      identity: productDescription.value,
+      recipient: userData?.id,
+      receipt_date: getDate(),
+      apartmentId: receptor.value,
     })
     .then(async (response) => {
       if (![200, 201].includes(response.status)) {
-        throw new Error('Falha ao criar o usuário, tente novamente');
+        throw new Error('');
       }
-      await modelAdd.value.forEach(async (item) => {
-        await api.post('/apartments', {
-          user_id: response.data.id,
-          cpf: cpf.value,
-          id: item,
-        });
-      });
 
       $q.notify({
         color: 'green-4',
         textColor: 'white',
         icon: 'cloud_done',
-        message: 'Enviado!',
+        message: 'Encomenda cadastrada com sucesso!',
       });
+
+      productDescription.value = null;
+      selectedUser.value = null;
     })
     .catch(() => {
       $q.notify({
@@ -85,12 +92,21 @@ async function onSubmit() {
         icon: 'report_problem',
         position: 'top',
         timeout: 4000,
-        message: 'Falha ao criar o usuário, tente novamente.',
+        message: 'Falha ao cadastrar a encomenda, tente novamente.',
       });
     });
 }
 
-function validateAPT(val) {
-  return /^[0-9]\.[A-Z]\.[a-z]$/.test(val);
+async function getApartments() {
+  apartmentData.value = await api.get('/apartments').then(
+    (response) => response.data.map((apartment) => apartment.id),
+    // eslint-disable-next-line function-paren-newline
+  );
 }
+
+onMounted(async () => {
+  await getApartments();
+
+  receptor.value = userData?.name;
+});
 </script>
