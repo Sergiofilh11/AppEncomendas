@@ -36,32 +36,32 @@ import { useRouter } from 'vue-router';
 const linksList = [
   {
     title: 'Registro',
-    caption: 'Registro de Usuário',
-    icon: 'document',
+    caption: 'Registro de usuário',
+    icon: 'person_add',
     to: 'http://localhost:9000/register',
   },
   {
     title: 'Lista',
-    caption: 'Listagem de Úsuario',
-    icon: 'list',
+    caption: 'Listagem de usuário',
+    icon: 'list_alt',
     link: 'http://localhost:9000/listuser',
   },
   {
     title: 'Encomendas',
-    caption: 'Cadastrar Encomendas',
-    icon: 'add box',
+    caption: 'Cadastrar encomendas',
+    icon: 'add_box',
     link: 'http://localhost:9000/newOrders',
   },
   {
     title: 'Encomendas não retiradas',
     caption: 'Listagem de encomendas não retiradas',
-    icon: 'cube',
+    icon: 'shelves',
     link: 'http://localhost:9000/orders',
   },
   {
     title: 'Histórico',
-    caption: 'Histórico de Ordens',
-    icon: 'paper',
+    caption: 'Histórico encomendas',
+    icon: 'pallet',
     link: 'http://localhost:9000/historic',
   },
 ];
