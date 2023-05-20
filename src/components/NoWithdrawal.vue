@@ -46,7 +46,7 @@
             outlined
             label="Apartamento"
             v-model="selectedApartment"
-            :options="selectApartment.value"
+            :options="selectApartment"
             option-label="id"
             option-value="id"
           />
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import { api } from 'boot/axios';
 // import { userStore } from 'stores/userStore';
 
@@ -107,26 +107,21 @@ const columns = [
 export default {
   setup() {
     const rows = ref([]);
-    // const store = userStore();
-    // const apartmentId = store.getApartmentId;
     const modalOpen = ref(false);
     const apartmentNumber = ref('');
     const selectedApartment = ref(null);
-    const selectApartment = ref([]);
+    const selectApartment = reactive([]);
     const apartments = ref([]);
+    // const store = userStore();
+    // const apartmentId = store.getApartmentId;
 
     onMounted(async () => {
       // eslint-disable-next-line operator-linebreak
-      const urlToSend =
-        '/orders?_sort=receipt_date&_order=desc&_expand=apartment';
+      const urlToSend = '/orders?_sort=receipt_date&_order=desc';
       try {
         const response = await api.get(urlToSend);
-        response.data.map((item, i) => {
-          selectApartment.value.push(item.apartment);
-
-          return i;
-        });
-        console.log(selectApartment.value);
+        const { data } = await api.get('/apartments');
+        selectApartment.push(...data);
         rows.value = response.data;
       } catch (error) {
         console.error('Erro ao carregar os encomendas:', error);
@@ -151,6 +146,7 @@ export default {
       closeModal,
       openModal,
       selectedApartment,
+      selectApartment,
       apartments,
     };
   },
