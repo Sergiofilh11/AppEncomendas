@@ -87,6 +87,7 @@ module.exports = configure((/* ctx */) => ({
   framework: {
     config: {},
 
+    iconSet: 'mdi-v5',
     // iconSet: 'material-icons', // Quasar icon set
     // lang: 'en-US', // Quasar language pack
 
@@ -98,7 +99,7 @@ module.exports = configure((/* ctx */) => ({
     // directives: [],
 
     // Quasar plugins
-    plugins: ['Notify', 'BottomSheet'],
+    plugins: ['Notify', 'BottomSheet', 'Dialog'],
   },
 
   // animations: 'all', // --- includes all animations

@@ -10,16 +10,61 @@
           :rows="rows"
           :columns="columns"
           row-key="users"
-        />
+        >
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                {{ col.value }}
+              </q-td>
+              <q-td auto-width>
+                <q-btn
+                  size="sm"
+                  :icon="'add'"
+                  class="q-mx-sm q-mr-sm text-positive"
+                  dense
+                  round
+                  @click="openModal(props.row.id)"
+                />
+              </q-td>
+            </q-tr>
+            <q-tr v-show="props.expand" :props="props">
+              <q-td colspan="100%">
+                <div class="text-left">
+                  This is expand slot for row above: {{ props.row.name }}.
+                </div>
+              </q-td>
+            </q-tr>
+          </template>
+        </q-table>
       </div>
     </div>
+
+    <q-dialog v-model="modalOpen" persistent>
+      <q-card>
+        <q-card-section class="q-pt-none">
+          <q-select
+            outlined
+            label="Apartamento"
+            v-model="selectedApartment"
+            :options="selectApartment.value"
+            option-label="id"
+            option-value="id"
+          />
+        </q-card-section>
+
+        <q-card-actions>
+          <q-btn label="Cancelar" color="primary" flat @click="closeModal" />
+          <q-btn label="Associar" color="positive" flat />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import { onMounted, ref } from 'vue';
 import { api } from 'boot/axios';
-import { userStore } from 'stores/userStore';
+// import { userStore } from 'stores/userStore';
 
 const columns = [
   {
@@ -49,28 +94,64 @@ const columns = [
     format: (val) => `${val}`,
     sortable: true,
   },
+  {
+    name: 'actions',
+    required: true,
+    align: 'right',
+    field: '',
+    format: (row) => row,
+    sortable: false,
+    class: 'q-table__td-actions',
+  },
 ];
 export default {
   setup() {
     const rows = ref([]);
-    const store = userStore();
-    const apartmentId = store.getApartmentId;
+    // const store = userStore();
+    // const apartmentId = store.getApartmentId;
+    const modalOpen = ref(false);
+    const apartmentNumber = ref('');
+    const selectedApartment = ref(null);
+    const selectApartment = ref([]);
+    const apartments = ref([]);
+
     onMounted(async () => {
-      const urlToSend = '/orders?_sort=receipt_date&_order=desc';
+      // eslint-disable-next-line operator-linebreak
+      const urlToSend =
+        '/orders?_sort=receipt_date&_order=desc&_expand=apartment';
       try {
         const response = await api.get(urlToSend);
-        rows.value = response.data.filter(
-          (order) =>
-            order.apartmentId === apartmentId && order.date_withdrawal === null,
-        );
+        response.data.map((item, i) => {
+          selectApartment.value.push(item.apartment);
+
+          return i;
+        });
+        console.log(selectApartment.value);
+        rows.value = response.data;
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Erro ao carregar os encomendas:', error);
       }
     });
+
+    const closeModal = () => {
+      apartmentNumber.value = '';
+      modalOpen.value = false;
+    };
+
+    const openModal = (row) => {
+      console.log('Add encomenda:', row);
+      modalOpen.value = true;
+    };
+
     return {
       columns,
       rows,
+      modalOpen,
+      apartmentNumber,
+      closeModal,
+      openModal,
+      selectedApartment,
+      apartments,
     };
   },
   computed: {
@@ -107,8 +188,10 @@ export default {
         .padStart(2, '0')}/${year.toString()}`;
     },
     onEncomendaClick(encomenda) {
-      // eslint-disable-next-line no-console
       console.log(`Encomenda ${encomenda.id} clicada.`);
+    },
+    linkOrderToAnApartment(row) {
+      console.log('Adicionar encomenda:', row);
     },
   },
 };

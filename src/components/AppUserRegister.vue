@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <h4 class="flex flex-center">Cadastro</h4>
+    <h4 class="flex flex-center">Cadastro de usuários</h4>
     <q-form @submit="onSubmit" class="q-gutter-md q-mt-xl">
       <q-input
         filled
@@ -78,18 +78,20 @@ const options = ref([
     value: 'tenant',
     label: 'Inquilino',
   },
-  {
-    value: 'concierge',
-    label: 'Porteiro',
-  },
 ]);
 
 const userData = store.getUserData;
 if (userData.user_type === 'syndicate') {
-  options.value.push({
-    value: 'syndicate',
-    label: 'Sindico',
-  });
+  options.value.push(
+    {
+      value: 'syndicate',
+      label: 'Sindico',
+    },
+    {
+      value: 'concierge',
+      label: 'Porteiro',
+    },
+  );
 }
 
 async function onSubmit() {

@@ -17,7 +17,7 @@
 
       <q-select
         filled
-        v-model="selectedUser"
+        v-model="selectedApartment"
         :options="apartmentData"
         hint="Selecione o apartamento"
         :rules="[(val) => val.trim() !== '' || 'O campo é obrigatório.']"
@@ -48,7 +48,7 @@ const $q = useQuasar();
 const store = userStore();
 const userData = store.getUserData;
 const productDescription = ref(null);
-const selectedUser = ref(null);
+const selectedApartment = ref(null);
 const apartmentData = ref([]);
 const receptor = ref(null);
 
@@ -68,7 +68,7 @@ async function onSubmit() {
       identity: productDescription.value,
       recipient: userData?.id,
       receipt_date: getDate(),
-      apartmentId: receptor.value,
+      apartmentId: selectedApartment.value,
     })
     .then(async (response) => {
       if (![200, 201].includes(response.status)) {
@@ -83,7 +83,7 @@ async function onSubmit() {
       });
 
       productDescription.value = null;
-      selectedUser.value = null;
+      selectedApartment.value = null;
     })
     .catch(() => {
       $q.notify({

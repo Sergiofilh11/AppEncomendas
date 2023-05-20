@@ -110,7 +110,7 @@ function onSubmit() {
 
       store.SET_USER_DATA(user);
 
-      if (id) {
+      if (!isAdmin.value && id) {
         store.SET_APARTMENT_ID(id);
       }
 
