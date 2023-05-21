@@ -5,9 +5,9 @@ export const isAdminUser = (to, from, next) => {
 
   return (
     // eslint-disable-next-line operator-linebreak
-    ['syndicate', 'concierge'].includes(userStore?.userData?.user_type) &&
+    userStore?.isAdmin &&
       tokenIsAvailable(to, from, next, true)
       ? next()
-      : next({ name: 'login' })
+      : next({ name: userStore?.userToken ? 'orders' : 'login' })
   );
 };

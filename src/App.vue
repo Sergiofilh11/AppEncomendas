@@ -1,3 +1,4 @@
+<!-- eslint-disable operator-linebreak -->
 <template>
   <q-layout>
     <q-toolbar>
@@ -77,7 +78,7 @@ export default defineComponent({
         adminAccess: true,
       },
       {
-        title: 'Lista de encomendas',
+        title: 'Cadastro de encomendas',
         caption: 'Cadastrar encomendas',
         icon: 'add_box',
         link: '/newOrders',
@@ -120,22 +121,15 @@ export default defineComponent({
 
     getListLinks() {
       const userData = this.store.getUserData;
-      const apartmentId = this.store.getApartmentId;
-
+      const isAdmin = this.store.getUserIsAdmin;
+      console.log(isAdmin);
       if (!userData) return [];
 
       return this.linksList.filter(
         (link) =>
-          !(
-            (userData.user_type === 'tenant' && link.adminAccess)
-            || (userData.user_type === 'concierge' && !link.adminAccess)
-            || (userData.user_type === 'syndicate'
-              && apartmentId
-              && link.adminAccess)
-            || (userData.user_type === 'syndicate'
-              && !apartmentId
-              && !link.adminAccess)
-          ),
+          (!isAdmin && !link.adminAccess)
+          || (isAdmin && !link.adminAccess)
+          || (isAdmin && link.adminAccess),
       );
     },
   },

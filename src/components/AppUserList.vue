@@ -7,7 +7,7 @@
         :columns="columns"
         row-key="users"
         color="primary"
-        no-data-label="Carregando..."
+        no-data-label="Nenhum usuário encontrado"
         hide-pagination
         :loading="loading"
         :rows-per-page-options="[0]"
@@ -33,6 +33,7 @@
               {{ col.value }}
             </q-td>
             <q-td auto-width>
+              <!-- Visualizar -->
               <q-btn
                 class="q-mx-sm"
                 size="sm"
@@ -42,7 +43,7 @@
                 dense
                 @click="showViewModal(props.row.apartments)"
               />
-              <!-- Visualizar -->
+              <!-- Editar -->
               <q-btn
                 class="q-mx-sm"
                 size="sm"
@@ -50,8 +51,8 @@
                 color="primary"
                 round
                 dense
+                @click="showEdit(props)"
               />
-              <!-- Editar -->
               <q-btn
                 class="q-mx-sm"
                 size="sm"
@@ -59,6 +60,7 @@
                 :icon="mdiDelete"
                 round
                 dense
+                @click="showDialogDelete(props)"
               />
               <!-- Excluir -->
             </q-td>
@@ -67,6 +69,7 @@
         </template>
       </q-table>
 
+      <!-- Visualizar Usuário -->
       <q-dialog v-model="dialogVisivel">
         <q-card>
           <q-card-section>
@@ -80,7 +83,7 @@
             <p v-else>Sem apartamentos cadastrados</p>
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn label="Cancelar" color="red" @click="closeModal" />
+            <q-btn label="Cancelar" color="red" @click="closeDialogVisivel" />
             <q-btn
               v-if="opcoes.length"
               label="Prosseguir"
@@ -90,12 +93,53 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
+
+      <!-- Editar Usuário -->
+      <q-dialog v-model="dialogEdit">
+        <q-card>
+          <q-card-section>
+            <q-input label="Nome" v-model="editUser.name"></q-input>
+            <q-input
+              label="CPF"
+              v-model="editUser.cpf"
+              mask="###.###.###-##"
+            ></q-input>
+            <q-btn
+              label="Editar Apartamento"
+              color="primary"
+              @click="
+                $router.push({
+                  path: '/listuser/apartment',
+                  query: { userId: editUser.id },
+                })
+              "
+            />
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn label="Cancelar" color="red" @click="dialogEdit = false" />
+            <q-btn label="Editar" color="primary" @click="edit()" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+
+      <!-- Excluir usuário -->
+      <q-dialog v-model="dialogDelete">
+        <q-card>
+          <q-card-section>
+            <h4>Deseja excluir o {{ editUser.name }}</h4>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn label="Cancelar" color="red" @click="dialogDelete = false" />
+            <q-btn label="Excluir" color="primary" @click="deleteUser()" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
   </div>
 </template>
 <script>
 import { api } from 'boot/axios';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import { mdiDelete, mdiEye, mdiGreasePencil } from '@quasar/extras/mdi-v5';
 import {
   QDialog,
@@ -104,6 +148,7 @@ import {
   QCardActions,
   QBtn,
   QOptionGroup,
+  useQuasar,
 } from 'quasar';
 import { useRouter } from 'vue-router';
 
@@ -123,15 +168,6 @@ const columns = [
     label: 'CPF',
     align: 'left',
     field: (row) => row.cpf,
-    format: (val) => `${val}`,
-    sortable: true,
-  },
-  {
-    name: 'Apartamento',
-    required: false,
-    label: 'N° apartamento',
-    align: 'center',
-    field: (row) => row.id,
     format: (val) => `${val}`,
     sortable: true,
   },
@@ -186,14 +222,18 @@ export default {
   },
   setup() {
     const router = useRouter();
-
+    const $q = useQuasar();
     const rows = ref([]);
     const nextPage = ref(2);
     const loading = ref(false);
 
     const dialogVisivel = ref(false);
+    const dialogEdit = ref(false);
+    const dialogDelete = ref(false);
     const selectedOption = ref(null);
     const opcoes = ref([]);
+    const editUser = reactive({});
+    const typeUserClicked = ref();
 
     const showViewModal = (options) => {
       dialogVisivel.value = true;
@@ -206,8 +246,70 @@ export default {
       });
     };
 
-    const closeModal = () => {
+    const showEdit = (value) => {
+      editUser.name = value.row.name;
+      editUser.cpf = value.row.cpf;
+      editUser.id = value.row.id;
+      typeUserClicked.value = value.row.user_type;
+      dialogEdit.value = true;
+    };
+
+    const showDialogDelete = (value) => {
+      editUser.id = value.row.id;
+      editUser.name = value.row.name;
+      dialogDelete.value = true;
+    };
+
+    const closeDialogVisivel = () => {
       dialogVisivel.value = false;
+    };
+
+    const closeDialogDelete = () => {
+      dialogDelete.value = false;
+    };
+
+    async function getUsers() {
+      try {
+        const response = await api.get('/users?_embed=apartments');
+        rows.value = response.data;
+      } catch (error) {
+        console.error('Erro ao carregar os usuários:', error);
+      }
+    }
+
+    const edit = () => {
+      loading.value = true;
+      api
+        .put(`/users/${editUser.id}`, {
+          name: editUser.name,
+          cpf: editUser.cpf,
+        })
+        .then(() => {
+          $q.notify({
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            message: 'Usuário editado com sucesso!',
+          });
+          dialogEdit.value = false;
+          getUsers();
+          loading.value = false;
+        });
+    };
+
+    const deleteUser = () => {
+      loading.value = true;
+      api.delete(`/users/${editUser.id}`).then(() => {
+        $q.notify({
+          color: 'red-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: 'Usuário excluido com sucesso!',
+        });
+        dialogDelete.value = false;
+        getUsers();
+        loading.value = false;
+      });
     };
 
     const nextStep = () => {
@@ -217,14 +319,8 @@ export default {
       });
       dialogVisivel.value = false;
     };
-
-    onMounted(async () => {
-      try {
-        const response = await api.get('/users?_embed=apartments');
-        rows.value = response.data;
-      } catch (error) {
-        console.error('Erro ao carregar os usuários:', error);
-      }
+    onMounted(() => {
+      getUsers();
     });
 
     return {
@@ -236,10 +332,17 @@ export default {
       loading,
       mdiEye,
       dialogVisivel,
+      dialogEdit,
       selectedOption,
+      editUser,
+      edit,
+      deleteUser,
       opcoes,
       showViewModal,
-      closeModal,
+      showDialogDelete,
+      showEdit,
+      closeDialogVisivel,
+      closeDialogDelete,
       nextStep,
       onScroll({ to }) {
         const lastIndex = rows.value.length - 1;

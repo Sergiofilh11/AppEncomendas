@@ -28,6 +28,12 @@ const routes = [
         component: () => import('components/AppUserList.vue'),
       },
       {
+        path: '/listuser/apartment',
+        beforeEnter: isAdminUser,
+        name: 'list-user-apartment',
+        component: () => import('components/AppUserApartmentsEdit.vue'),
+      },
+      {
         path: '/newOrders',
         beforeEnter: isAdminUser,
         name: 'new-Orders',
@@ -38,6 +44,12 @@ const routes = [
         beforeEnter: tokenIsAvailable,
         name: 'orders',
         component: () => import('components/NoWithdrawal.vue'),
+      },
+      {
+        path: '/orders/:id',
+        beforeEnter: tokenIsAvailable,
+        name: 'edit-order',
+        component: () => import('components/EditOrder.vue'),
       },
       {
         path: '/historic',

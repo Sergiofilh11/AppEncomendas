@@ -25,6 +25,27 @@
                   round
                   @click="openModal(props.row.id)"
                 />
+                <q-btn
+                  size="sm"
+                  :icon="'edit'"
+                  class="q-mx-sm q-mr-sm text-primary"
+                  dense
+                  round
+                  @click="
+                    $router.push({
+                      name: 'edit-order',
+                      params: { id: props.row.id },
+                    })
+                  "
+                />
+                <q-btn
+                  size="sm"
+                  :icon="'delete'"
+                  class="q-mx-sm q-mr-sm text-red"
+                  dense
+                  round
+                  @click="openDeleteModal(props.row)"
+                />
               </q-td>
             </q-tr>
             <q-tr v-show="props.expand" :props="props">
@@ -41,20 +62,48 @@
 
     <q-dialog v-model="modalOpen" persistent>
       <q-card>
-        <q-card-section class="q-pt-none">
+        <q-card-section class="q-pt-md">
           <q-select
             outlined
-            label="Apartamento"
-            v-model="selectedApartment"
-            :options="selectApartment"
-            option-label="id"
+            label="Coletor"
+            v-model="selectedUser"
+            :options="listOfUsers"
+            option-label="name"
             option-value="id"
           />
         </q-card-section>
 
         <q-card-actions>
           <q-btn label="Cancelar" color="primary" flat @click="closeModal" />
-          <q-btn label="Associar" color="positive" flat />
+          <q-btn
+            label="Associar"
+            color="positive"
+            flat
+            @click="sendUserReceiver"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="deleteModal" persistent>
+      <q-card>
+        <q-card-section class="q-pt-sm">
+          <h6>Tem certeza que deseja excluir a encomenda {{}}</h6>
+        </q-card-section>
+
+        <q-card-actions class="flex flex-center">
+          <q-btn
+            label="Cancelar"
+            color="primary"
+            class="q-mx-md"
+            @click="deleteModal = false"
+          />
+          <q-btn
+            class="q-mx-md"
+            label="Remover"
+            color="negative"
+            @click="removeOrder"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -66,6 +115,8 @@ import { onMounted, ref, reactive } from 'vue';
 import { api } from 'boot/axios';
 import { userStore } from 'stores/userStore';
 import { useRoute } from 'vue-router';
+import { getCurrentDate } from 'src/services/generateCurrentDate';
+import { useQuasar } from 'quasar';
 
 const columns = [
   {
@@ -109,10 +160,14 @@ export default {
   setup() {
     const rows = ref([]);
     const modalOpen = ref(false);
-    const apartmentNumber = ref('');
-    const selectedApartment = ref(null);
-    const selectApartment = reactive([]);
+    const deleteModal = ref(false);
+
     const apartments = ref([]);
+
+    const selectedUser = ref(null);
+    const selectedOrder = ref(null);
+
+    const listOfUsers = reactive([]);
 
     const store = userStore();
     const apartmentId = store.getApartmentId;
@@ -120,7 +175,9 @@ export default {
 
     const router = useRoute();
 
-    onMounted(async () => {
+    const $q = useQuasar();
+
+    const loadOrders = async () => {
       // eslint-disable-next-line operator-linebreak
       let urlToSend = '/orders?_sort=receipt_date&_order=desc';
       const apartmentIdByUrl = router.query?.apartmentId;
@@ -133,21 +190,34 @@ export default {
 
       try {
         const response = await api.get(urlToSend);
-        const { data } = await api.get('/apartments');
-        selectApartment.push(...data);
-        rows.value = response.data.filter((row) => row.date_withdrawal === null);
-      } catch (error) {
-        console.error('Erro ao carregar os encomendas:', error);
+
+        if (!response.data) return;
+
+        const { data } = await api.get('/users');
+        listOfUsers.push(...data);
+        rows.value = response.data.filter((row) => !row.date_withdrawal);
+      } catch {
+        $q.notify({
+          color: 'negative',
+          textColor: 'white',
+          icon: 'report_problem',
+          position: 'top',
+          timeout: 4000,
+          message: 'Erro ao carregar os encomendas:',
+        });
       }
+    };
+
+    onMounted(async () => {
+      await loadOrders();
     });
 
     const closeModal = () => {
-      apartmentNumber.value = '';
       modalOpen.value = false;
     };
 
-    const openModal = (row) => {
-      console.log('Add encomenda:', row);
+    const openModal = (orderId) => {
+      selectedOrder.value = orderId;
       modalOpen.value = true;
     };
 
@@ -155,13 +225,16 @@ export default {
       columns,
       rows,
       modalOpen,
-      apartmentNumber,
       closeModal,
       openModal,
-      selectedApartment,
-      selectApartment,
+      deleteModal,
+      loadOrders,
+      selectedUser,
+      listOfUsers,
       apartments,
       userIsAdmin,
+      selectedOrder,
+      $q,
     };
   },
   computed: {
@@ -197,11 +270,75 @@ export default {
         .toString()
         .padStart(2, '0')}/${year.toString()}`;
     },
-    onEncomendaClick(encomenda) {
-      console.log(`Encomenda ${encomenda.id} clicada.`);
+    sendUserReceiver() {
+      api
+        .patch(`/orders/${this.selectedOrder}`, {
+          userId: this.selectedUser.id,
+          date_withdrawal: getCurrentDate(),
+        })
+
+        .then(async (response) => {
+          if (response.status !== 200) {
+            throw new Error();
+          }
+
+          this.$q.notify({
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            timeout: 2000,
+            message: 'Encomenda retirada com sucesso!',
+          });
+
+          await this.loadOrders();
+        })
+        .catch(() => {
+          this.$q.notify({
+            color: 'negative',
+            textColor: 'white',
+            icon: 'report_problem',
+            position: 'top',
+            timeout: 4000,
+            message: 'Erro ao vincular o recebedor',
+          });
+        });
+
+      this.closeModal();
     },
-    linkOrderToAnApartment(row) {
-      console.log('Adicionar encomenda:', row);
+    openDeleteModal(orderData) {
+      this.deleteModal = true;
+      this.selectedOrderId = orderData.id;
+    },
+
+    removeOrder() {
+      api
+        .delete(`/orders/${this.selectedOrderId}`)
+        .then(async (response) => {
+          if (response.status !== 200) {
+            throw new Error();
+          }
+
+          this.deleteModal = false;
+          this.$q.notify({
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            timeout: 2000,
+            message: 'Encomenda removida com sucesso!',
+          });
+
+          await this.loadOrders();
+        })
+        .catch(() => {
+          this.$q.notify({
+            color: 'negative',
+            textColor: 'white',
+            icon: 'report_problem',
+            position: 'top',
+            timeout: 4000,
+            message: 'Erro ao remover a entrega.',
+          });
+        });
     },
   },
 };

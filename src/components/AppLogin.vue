@@ -1,7 +1,12 @@
 <template>
   <q-layout class="app-container">
     <div class="flex flex-center">
-      <h2 class="text-h2 text-bold">Login</h2>
+      <img
+        src="https://i.imgur.com/gFTIS61.png"
+        alt="Logo do serviço de entrega"
+        class="logo"
+      />
+      <h3 class="text-h4 text-bold">PortariaDelivery</h3>
     </div>
 
     <q-form
@@ -38,7 +43,7 @@
         filled
         type="string"
         v-model="dataLogin.accessCode"
-        label="Digite o seu codigo de acesso"
+        label="Digite o seu código de acesso"
         lazy-rules
         :rules="[
           (val) => (val && val.length > 0) || 'O campo não pode ser vazio',
@@ -53,6 +58,9 @@
         <q-btn label="Entrar" type="submit" color="primary" />
       </div>
     </q-form>
+    <div class="footer">
+      <p class="text-center">© 2023 Desenvolvido por Equipe Viridian</p>
+    </div>
   </q-layout>
 </template>
 
@@ -85,7 +93,7 @@ function getUrlToSend() {
 }
 
 function buildJWTToken(payload) {
-  return sign({ isAutheticated: true, ...payload }, 'BIG_SECRET', {
+  return sign({ isAuthenticated: true, ...payload }, 'BIG_SECRET', {
     expiresIn: '1h',
   });
 }
@@ -140,7 +148,21 @@ function onSubmit() {
   padding: 7px;
 }
 
+.logo {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+}
+
 .text-h2.text-h5 {
   font-family: 'Bebas Neue', sans-serif;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 40px 0;
+  text-align: center;
 }
 </style>

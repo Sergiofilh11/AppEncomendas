@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <h4 class="flex flex-center">Cadastrar Encomendas</h4>
+    <h4 class="flex flex-center">Editar Encomendas</h4>
     <q-form @submit="onSubmit" class="q-gutter-md q-mt-xl">
       <q-input
         filled
@@ -9,7 +9,7 @@
         hint="Tipo do Produto"
         lazy-rules
         :rules="[
-          (val) => (val.trim() && val.length > 0) || 'O campo é obrigatório.',
+          (val) => (val && val.length > 0) || 'O campo é obrigatório.',
           ,
           ,
         ]"
@@ -21,10 +21,11 @@
         :options="apartmentData"
         hint="Selecione o apartamento"
         label="Selecione o apartamento"
-        :rules="[(val) => val.trim() !== '' || 'O campo é obrigatório.']"
+        :rules="[(val) => val !== '' || 'O campo é obrigatório.']"
       />
 
       <q-input
+        v-if="receptor"
         filled
         v-model="receptor"
         label="Recebedor"
@@ -33,7 +34,7 @@
         disable
       />
       <div class="flex flex-center q-mt-xl">
-        <q-btn type="submit" color="primary" label="Cadastrar" />
+        <q-btn type="submit" color="primary" label="Atualizar" />
       </div>
     </q-form>
   </div>
@@ -42,35 +43,26 @@
 <script setup>
 import { useQuasar } from 'quasar';
 import { api } from 'src/boot/axios';
-import { userStore } from 'src/stores/userStore';
 import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const $q = useQuasar();
-const store = userStore();
-const userData = store.getUserData;
 const productDescription = ref(null);
 const selectedApartment = ref(null);
+const oldApartmentId = ref(null);
+
 const apartmentData = ref([]);
 const receptor = ref(null);
 
-function getDate() {
-  const parsedDate = new Date();
-  const day = parsedDate.getDate();
-  const month = parsedDate.getMonth() + 1;
-  const year = parsedDate.getFullYear();
-  return `${day.toString().padStart(2, '0')}/${month
-    .toString()
-    .padStart(2, '0')}/${year.toString()}`;
-}
+const route = useRoute();
+const { id } = route.params;
+
+const router = useRouter();
 
 async function onSubmit() {
   await api
-    .post('/orders', {
+    .patch(`/orders/${id}`, {
       identity: productDescription.value,
-      recipient: userData?.id,
-      receipt_date: getDate(),
-      userId: '',
-      date_withdrawal: '',
       apartmentId: selectedApartment.value,
     })
     .then(async (response) => {
@@ -82,11 +74,14 @@ async function onSubmit() {
         color: 'green-4',
         textColor: 'white',
         icon: 'cloud_done',
-        message: 'Encomenda cadastrada com sucesso!',
+        timeout: 2000,
+        message: 'Encomenda editada com sucesso!',
       });
 
-      productDescription.value = null;
-      selectedApartment.value = null;
+      router.push({
+        name: 'orders',
+        query: { apartmentId: oldApartmentId.value },
+      });
     })
     .catch(() => {
       $q.notify({
@@ -95,7 +90,7 @@ async function onSubmit() {
         icon: 'report_problem',
         position: 'top',
         timeout: 4000,
-        message: 'Falha ao cadastrar a encomenda, tente novamente.',
+        message: 'Falha ao editar a encomenda, tente novamente.',
       });
     });
 }
@@ -107,9 +102,35 @@ async function getApartments() {
   );
 }
 
+async function getOrderDataById() {
+  await api
+    .get(`/orders/${id}`)
+    .then(async (response) => {
+      const { apartmentId, identity, recipient } = response.data;
+      oldApartmentId.value = apartmentId;
+      selectedApartment.value = apartmentId;
+      productDescription.value = identity;
+
+      if (recipient) {
+        await api.get(`/users/${recipient}`).then((res) => {
+          receptor.value = res.data.name;
+        });
+      }
+    })
+    .catch(() => {
+      $q.notify({
+        color: 'negative',
+        textColor: 'white',
+        icon: 'report_problem',
+        position: 'top',
+        timeout: 4000,
+        message: 'Encomenda não encontrada, tente novamente.',
+      });
+    });
+}
+
 onMounted(async () => {
   await getApartments();
-
-  receptor.value = userData?.name;
+  await getOrderDataById();
 });
 </script>
