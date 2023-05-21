@@ -135,7 +135,7 @@ export default {
         const response = await api.get(urlToSend);
         const { data } = await api.get('/apartments');
         selectApartment.push(...data);
-        rows.value = response.data;
+        rows.value = response.data.filter((row) => row.date_withdrawal === null);
       } catch (error) {
         console.error('Erro ao carregar os encomendas:', error);
       }
