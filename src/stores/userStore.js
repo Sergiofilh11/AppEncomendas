@@ -6,14 +6,14 @@ export const userStore = defineStore('userStore', {
     userData: null,
     apartmentId: null,
     userToken: null,
-    tokenExpiration: null,
+    isAdmin: false,
   }),
 
   getters: {
     getUserData: (state) => state.userData,
     getUserToken: (state) => state.userToken,
     getApartmentId: (state) => state.apartmentId,
-    getTokenExpiration: (state) => state.tokenExpiration,
+    getUserIsAdmin: (state) => state.isAdmin,
   },
 
   actions: {
@@ -25,6 +25,9 @@ export const userStore = defineStore('userStore', {
     },
     SET_USER_TOKEN(userToken) {
       this.userToken = userToken;
+    },
+    SET_USER_IS_ADMIN(userType) {
+      this.isAdmin = !!userType;
     },
   },
 });

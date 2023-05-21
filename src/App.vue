@@ -63,21 +63,21 @@ export default defineComponent({
 
     const linksList = [
       {
-        title: 'Registro',
+        title: 'Cadastro de usuários',
         caption: 'Registro de usuário',
         icon: 'person_add',
         to: '/register',
         adminAccess: true,
       },
       {
-        title: 'Lista',
+        title: 'Lista de usuários',
         caption: 'Listagem de usuário',
         icon: 'list_alt',
         link: '/listuser',
         adminAccess: true,
       },
       {
-        title: 'Encomendas',
+        title: 'Lista de encomendas',
         caption: 'Cadastrar encomendas',
         icon: 'add_box',
         link: '/newOrders',

@@ -1,7 +1,7 @@
 <!-- eslint-disable implicit-arrow-linebreak -->
 <!-- eslint-disable implicit-arrow-linebreak -->
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-md q-mt-md">
     <div class="q-pa-md">
       <div class="q-container-flex">
         <q-table
@@ -16,7 +16,7 @@
               <q-td v-for="col in props.cols" :key="col.name" :props="props">
                 {{ col.value }}
               </q-td>
-              <q-td auto-width>
+              <q-td v-if="userIsAdmin" auto-width>
                 <q-btn
                   size="sm"
                   :icon="'add'"
@@ -64,7 +64,8 @@
 <script>
 import { onMounted, ref, reactive } from 'vue';
 import { api } from 'boot/axios';
-// import { userStore } from 'stores/userStore';
+import { userStore } from 'stores/userStore';
+import { useRoute } from 'vue-router';
 
 const columns = [
   {
@@ -112,12 +113,24 @@ export default {
     const selectedApartment = ref(null);
     const selectApartment = reactive([]);
     const apartments = ref([]);
-    // const store = userStore();
-    // const apartmentId = store.getApartmentId;
+
+    const store = userStore();
+    const apartmentId = store.getApartmentId;
+    const userIsAdmin = store.getUserIsAdmin;
+
+    const router = useRoute();
 
     onMounted(async () => {
       // eslint-disable-next-line operator-linebreak
-      const urlToSend = '/orders?_sort=receipt_date&_order=desc';
+      let urlToSend = '/orders?_sort=receipt_date&_order=desc';
+      const apartmentIdByUrl = router.query?.apartmentId;
+
+      if (userIsAdmin && apartmentIdByUrl) {
+        urlToSend += `&apartmentId=${apartmentIdByUrl}`;
+      } else if (!userIsAdmin && apartmentId) {
+        urlToSend += `&apartmentId=${apartmentId}`;
+      }
+
       try {
         const response = await api.get(urlToSend);
         const { data } = await api.get('/apartments');
@@ -148,6 +161,7 @@ export default {
       selectedApartment,
       selectApartment,
       apartments,
+      userIsAdmin,
     };
   },
   computed: {

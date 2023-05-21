@@ -211,10 +211,9 @@ export default {
     };
 
     const nextStep = () => {
-      const { id, cpf } = selectedOption.value;
       router.push({
         name: 'orders',
-        query: { apartmentId: id, cpf },
+        query: { apartmentId: selectedOption.value.id },
       });
       dialogVisivel.value = false;
     };

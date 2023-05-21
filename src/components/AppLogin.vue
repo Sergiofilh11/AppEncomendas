@@ -115,7 +115,9 @@ function onSubmit() {
       }
 
       const authToken = buildJWTToken({ id: user.id, cpf: user.cpf });
+
       store.SET_USER_TOKEN(authToken);
+      store.SET_USER_IS_ADMIN(isAdmin.value);
 
       const redirectBy = isAdmin.value ? 'list-user' : 'orders';
       router.push({ name: redirectBy });
