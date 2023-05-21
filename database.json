@@ -25,7 +25,7 @@
       "userId": 11,
       "receipt_date": "10/06/2023",
       "date_withdrawal": null,
-      "apartmentId": "12e"
+      "apartmentId": "12E"
     },
     {
       "id": 9,
@@ -34,7 +34,7 @@
       "userId": 11,
       "receipt_date": "10/06/2023",
       "date_withdrawal": null,
-      "apartmentId": "12e"
+      "apartmentId": "12E"
     },
     {
       "id": 3,
@@ -52,7 +52,7 @@
       "userId": 11,
       "receipt_date": "10/06/2023",
       "date_withdrawal": "10/06/2023",
-      "apartmentId": "12e"
+      "apartmentId": "12E"
     },
     {
       "id": 5,
@@ -79,7 +79,7 @@
       "userId": 11,
       "receipt_date": "30/10/2023",
       "date_withdrawal": null,
-      "apartmentId": "12e"
+      "apartmentId": "12E"
     },
     {
       "identity": "Caixa de som",
