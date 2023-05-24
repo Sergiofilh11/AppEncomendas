@@ -193,11 +193,8 @@ export default {
         });
     };
     const showCreateApartments = () => {
-      console.log(route.query);
       dialogApartments.value = true;
       labelSubmitApartment.value = 'Registrar';
-      // userId: rows.value[0].userId
-      // code:
     };
     const createApartments = () => {
       loading.value = true;
@@ -218,8 +215,6 @@ export default {
           getApartments();
           loading.value = false;
         });
-      // userId: rows.value[0].userId
-      // code:
     };
     function crudApartment() {
       switch (labelSubmitApartment.value) {
