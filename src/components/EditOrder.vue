@@ -63,7 +63,7 @@ async function onSubmit() {
   await api
     .patch(`/orders/${id}`, {
       identity: productDescription.value,
-      apartmentId: selectedApartment.value,
+      apartmentId: selectedApartment.value.value,
     })
     .then(async (response) => {
       if (![200, 201].includes(response.status)) {
@@ -97,7 +97,11 @@ async function onSubmit() {
 
 async function getApartments() {
   apartmentData.value = await api.get('/apartments').then(
-    (response) => response.data.map((apartment) => apartment.id),
+    (response) =>
+      response.data.map((apartment) => ({
+        label: apartment.code,
+        value: apartment.id,
+      })),
     // eslint-disable-next-line function-paren-newline
   );
 }
@@ -108,7 +112,9 @@ async function getOrderDataById() {
     .then(async (response) => {
       const { apartmentId, identity, recipient } = response.data;
       oldApartmentId.value = apartmentId;
-      selectedApartment.value = apartmentId;
+      selectedApartment.value = apartmentData.value.find(
+        (apartment) => apartment.value === apartmentId,
+      );
       productDescription.value = identity;
 
       if (recipient) {

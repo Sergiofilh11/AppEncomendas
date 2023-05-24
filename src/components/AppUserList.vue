@@ -126,11 +126,24 @@
       <q-dialog v-model="dialogDelete">
         <q-card>
           <q-card-section>
-            <h4>Deseja excluir o {{ editUser.name }}</h4>
+            <h6>
+              Tem certeza que deseja excluir o usuário <b>{{ editUser.name }}</b
+              >?
+            </h6>
           </q-card-section>
-          <q-card-actions align="right">
-            <q-btn label="Cancelar" color="red" @click="dialogDelete = false" />
-            <q-btn label="Excluir" color="primary" @click="deleteUser()" />
+          <q-card-actions align="center">
+            <q-btn
+              class="q-mx-md"
+              label="Cancelar"
+              color="red"
+              @click="dialogDelete = false"
+            />
+            <q-btn
+              class="q-mx-md"
+              label="Excluir"
+              color="primary"
+              @click="deleteUser()"
+            />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -240,7 +253,7 @@ export default {
 
       options.forEach((item) => {
         opcoes.value.push({
-          label: `APARTAMENTO: ${item.id}`,
+          label: `APARTAMENTO: ${item.code}`,
           value: item,
         });
       });
@@ -301,7 +314,7 @@ export default {
       loading.value = true;
       api.delete(`/users/${editUser.id}`).then(() => {
         $q.notify({
-          color: 'red-4',
+          color: 'green-4',
           textColor: 'white',
           icon: 'cloud_done',
           message: 'Usuário excluido com sucesso!',
@@ -337,6 +350,7 @@ export default {
       editUser,
       edit,
       deleteUser,
+      dialogDelete,
       opcoes,
       showViewModal,
       showDialogDelete,

@@ -21,7 +21,6 @@
         :options="apartmentData"
         hint="Selecione o apartamento"
         label="Selecione o apartamento"
-        :rules="[(val) => val.trim() !== '' || 'O campo é obrigatório.']"
       />
 
       <q-input
@@ -32,6 +31,7 @@
         lazy-rules
         disable
       />
+
       <div class="flex flex-center q-mt-xl">
         <q-btn type="submit" color="primary" label="Cadastrar" />
       </div>
@@ -71,7 +71,7 @@ async function onSubmit() {
       receipt_date: getDate(),
       userId: '',
       date_withdrawal: '',
-      apartmentId: selectedApartment.value,
+      apartmentId: selectedApartment.value.value,
     })
     .then(async (response) => {
       if (![200, 201].includes(response.status)) {
@@ -102,7 +102,11 @@ async function onSubmit() {
 
 async function getApartments() {
   apartmentData.value = await api.get('/apartments').then(
-    (response) => response.data.map((apartment) => apartment.id),
+    (response) =>
+      response.data.map((apartment) => ({
+        label: apartment.code,
+        value: apartment.id,
+      })),
     // eslint-disable-next-line function-paren-newline
   );
 }

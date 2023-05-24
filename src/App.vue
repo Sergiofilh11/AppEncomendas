@@ -43,6 +43,9 @@
       />
     </q-toolbar>
     <router-view />
+    <div class="footer">
+      <p class="text-center">© 2023 Desenvolvido por Equipe Viridian</p>
+    </div>
   </q-layout>
 </template>
 
@@ -139,7 +142,7 @@ export default defineComponent({
       localStorage.removeItem('userStore');
 
       this.store.SET_USER_DATA(null);
-      this.store.SET_APARTMENT_ID(null);
+      this.store.SET_APARTMENT_CODE(null);
       this.store.SET_USER_TOKEN(null);
 
       this.$router.push('/login');
@@ -152,4 +155,12 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 0;
+  text-align: center;
+}
+</style>

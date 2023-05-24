@@ -4,7 +4,7 @@ export const userStore = defineStore('userStore', {
   persist: true,
   state: () => ({
     userData: null,
-    apartmentId: null,
+    apartmentCode: null,
     userToken: null,
     isAdmin: false,
   }),
@@ -12,7 +12,7 @@ export const userStore = defineStore('userStore', {
   getters: {
     getUserData: (state) => state.userData,
     getUserToken: (state) => state.userToken,
-    getApartmentId: (state) => state.apartmentId,
+    getApartmentCode: (state) => state.apartmentCode,
     getUserIsAdmin: (state) => state.isAdmin,
   },
 
@@ -20,8 +20,8 @@ export const userStore = defineStore('userStore', {
     SET_USER_DATA(userObject) {
       this.userData = userObject;
     },
-    SET_APARTMENT_ID(id) {
-      this.apartmentId = id;
+    SET_APARTMENT_CODE(id) {
+      this.apartmentCode = id;
     },
     SET_USER_TOKEN(userToken) {
       this.userToken = userToken;

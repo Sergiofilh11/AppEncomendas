@@ -107,7 +107,7 @@ import { useQuasar } from 'quasar';
 import { api } from 'src/boot/axios';
 import { ref } from 'vue';
 import { userStore } from 'src/stores/userStore';
-import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { generateMd5 } from '../services/generateMd5';
 
 const $q = useQuasar();
@@ -116,7 +116,7 @@ const name = ref(null);
 const cpf = ref(null);
 const listOfApartments = ref([]);
 const currentApartment = ref(null);
-const route = useRoute();
+const router = useRouter();
 
 const clientType = ref(null);
 const store = userStore();
@@ -190,23 +190,31 @@ async function onSubmit() {
       if (![200, 201].includes(response.status)) {
         throw new Error('Falha ao criar o usuário, tente novamente');
       }
-      await listOfApartments.value.forEach(async (item) => {
-        await api
-          .post('/apartments', {
+      listOfApartments.value.forEach(async (item) => {
+        try {
+          const apartmentExists = await api
+            .get(`apartments?code=${item.toUpperCase()}`)
+            .then((resApt) => resApt.data);
+
+          if (apartmentExists) {
+            throw new Error();
+          }
+
+          await api.post('/apartments', {
             userId: response.data.id,
             cpf: cpf.value,
-            id: item.toUpperCase(),
-          })
-          .catch(() => {
-            $q.notify({
-              color: 'negative',
-              textColor: 'white',
-              icon: 'report_problem',
-              position: 'top',
-              timeout: 4000,
-              message: `Falha ao vincular o apartamento ${item.toUpperCase()}`,
-            });
+            code: item.toUpperCase(),
           });
+        } catch {
+          $q.notify({
+            color: 'negative',
+            textColor: 'white',
+            icon: 'report_problem',
+            position: 'top',
+            timeout: 4000,
+            message: `Falha ao vincular o apartamento ${item.toUpperCase()}`,
+          });
+        }
       });
 
       $q.notify({
@@ -216,7 +224,7 @@ async function onSubmit() {
         message: 'Usuário cadastrado!',
       });
 
-      route.push({ name: 'orders' });
+      router.push({ name: 'orders' });
     })
     .catch(() => {
       $q.notify({
@@ -234,6 +242,7 @@ async function onSubmit() {
 
 function pushNewApartment() {
   if (!currentApartment.value) return;
+  if (listOfApartments.value.includes(currentApartment.value)) return;
 
   listOfApartments.value.push(currentApartment.value.toUpperCase());
   currentApartment.value = null;

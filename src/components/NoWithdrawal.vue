@@ -133,7 +133,7 @@ const columns = [
     required: true,
     label: 'Apartamento',
     align: 'left',
-    field: (row) => row.apartmentId,
+    field: (row) => row.apartment.code,
     format: (val) => `${val}`,
     sortable: true,
   },
@@ -170,7 +170,7 @@ export default {
     const listOfUsers = reactive([]);
 
     const store = userStore();
-    const apartmentId = store.getApartmentId;
+    const apartmentCode = store.getApartmentCode;
     const userIsAdmin = store.getUserIsAdmin;
 
     const router = useRoute();
@@ -179,13 +179,14 @@ export default {
 
     const loadOrders = async () => {
       // eslint-disable-next-line operator-linebreak
-      let urlToSend = '/orders?_sort=receipt_date&_order=desc';
+      let urlToSend =
+        '/orders?_sort=receipt_date&_order=desc&_expand=apartment';
       const apartmentIdByUrl = router.query?.apartmentId;
 
       if (userIsAdmin && apartmentIdByUrl) {
         urlToSend += `&apartmentId=${apartmentIdByUrl}`;
-      } else if (!userIsAdmin && apartmentId) {
-        urlToSend += `&apartmentId=${apartmentId}`;
+      } else if (!userIsAdmin && apartmentCode) {
+        urlToSend += `&code=${apartmentCode}`;
       }
 
       try {
@@ -235,6 +236,7 @@ export default {
       userIsAdmin,
       selectedOrder,
       $q,
+      apartmentCode,
     };
   },
   computed: {

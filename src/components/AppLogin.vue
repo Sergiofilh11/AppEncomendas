@@ -58,9 +58,6 @@
         <q-btn label="Entrar" type="submit" color="primary" />
       </div>
     </q-form>
-    <div class="footer">
-      <p class="text-center">© 2023 Desenvolvido por Equipe Viridian</p>
-    </div>
   </q-layout>
 </template>
 
@@ -89,7 +86,7 @@ function getUrlToSend() {
     return `/users?cpf=${cpf}&access_code=${accessCode}`;
   }
 
-  return `/apartments?cpf=${cpf}&id=${apartment}&_expand=user`;
+  return `/apartments?cpf=${cpf}&code=${apartment}&_expand=user`;
 }
 
 function buildJWTToken(payload) {
@@ -108,7 +105,7 @@ function onSubmit() {
 
       const data = response.data[0];
       const user = data?.user || data;
-      const id = data?.id;
+      const { code } = data;
 
       if (isAdmin.value) {
         if (['tenant'].includes(user.user_type)) {
@@ -118,8 +115,8 @@ function onSubmit() {
 
       store.SET_USER_DATA(user);
 
-      if (!isAdmin.value && id) {
-        store.SET_APARTMENT_ID(id);
+      if (!isAdmin.value && code) {
+        store.SET_APARTMENT_CODE(code);
       }
 
       const authToken = buildJWTToken({ id: user.id, cpf: user.cpf });
@@ -156,13 +153,5 @@ function onSubmit() {
 
 .text-h2.text-h5 {
   font-family: 'Bebas Neue', sans-serif;
-}
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  padding: 40px 0;
-  text-align: center;
 }
 </style>

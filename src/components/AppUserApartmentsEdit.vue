@@ -48,17 +48,40 @@
       </q-table>
 
       <!-- Editar Usuário -->
-      <q-dialog v-model="dialogEdit">
+      <q-dialog v-model="dialogApartments">
         <q-card>
           <q-card-section>
-            <q-input label="Nº do apartamento" v-model="editUser.id"></q-input>
+            <q-input
+              label="Nº do apartamento"
+              v-model="editUser.code"
+              mask="NNNNN"
+            ></q-input>
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn label="Cancelar" color="red" @click="dialogEdit = false" />
-            <q-btn label="Editar" color="primary" @click="edit()" />
+            <q-btn
+              label="Cancelar"
+              color="red"
+              @click="dialogApartments = false"
+            />
+            <q-btn
+              :label="labelSubmitApartment"
+              color="primary"
+              @click="crudApartment()"
+            />
           </q-card-actions>
         </q-card>
       </q-dialog>
+
+      <div class="flex" style="justify-content: flex-end">
+        <q-btn
+          class="q-mt-md q-mb-xl q-ml-sm"
+          fab
+          icon="add_home_work"
+          color="primary"
+          posit
+          @click="showCreateApartments()"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -82,7 +105,7 @@ const columns = [
     required: true,
     label: 'Nº do apartamento',
     align: 'left',
-    field: (row) => row.id,
+    field: (row) => row.code,
     format: (val) => `${val}`,
     sortable: true,
   },
@@ -126,16 +149,18 @@ export default {
     const rows = ref([]);
     const nextPage = ref(2);
     const loading = ref(false);
-    const dialogEdit = ref(false);
+    const dialogApartments = ref(false);
+    const labelSubmitApartment = ref('');
     const selectedOption = ref(null);
     const opcoes = ref([]);
     const editUser = reactive({});
     const editClickedUser = ref();
 
     const showEdit = (value) => {
-      editUser.id = value.row.id;
+      editUser.code = value.row.code;
       editClickedUser.value = value.row.id;
-      dialogEdit.value = true;
+      dialogApartments.value = true;
+      labelSubmitApartment.value = 'Editar';
     };
 
     async function getApartments() {
@@ -153,7 +178,7 @@ export default {
       loading.value = true;
       api
         .patch(`/apartments/${editClickedUser.value}`, {
-          id: editUser.id,
+          code: editUser.code,
         })
         .then(() => {
           $q.notify({
@@ -162,11 +187,49 @@ export default {
             icon: 'cloud_done',
             message: 'Apartamento editado com sucesso!',
           });
-          dialogEdit.value = false;
+          dialogApartments.value = false;
           getApartments();
           loading.value = false;
         });
     };
+    const showCreateApartments = () => {
+      console.log(route.query);
+      dialogApartments.value = true;
+      labelSubmitApartment.value = 'Registrar';
+      // userId: rows.value[0].userId
+      // code:
+    };
+    const createApartments = () => {
+      loading.value = true;
+      api
+        .post('apartments', {
+          userId: rows.value[0].userId,
+          cpf: rows.value[0].cpf,
+          code: editUser.code,
+        })
+        .then(() => {
+          $q.notify({
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            message: 'Apartamento registrado com sucesso!',
+          });
+          dialogApartments.value = false;
+          getApartments();
+          loading.value = false;
+        });
+      // userId: rows.value[0].userId
+      // code:
+    };
+    function crudApartment() {
+      switch (labelSubmitApartment.value) {
+        case 'Editar':
+          edit();
+          break;
+        default:
+          createApartments();
+      }
+    }
 
     onMounted(() => {
       getApartments();
@@ -180,13 +243,17 @@ export default {
       nextPage,
       loading,
       mdiEye,
-      dialogEdit,
+      dialogApartments,
+      labelSubmitApartment,
       selectedOption,
       editUser,
       edit,
       opcoes,
       editClickedUser,
       showEdit,
+      createApartments,
+      crudApartment,
+      showCreateApartments,
     };
   },
 };
