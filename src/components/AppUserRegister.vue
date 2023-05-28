@@ -158,7 +158,7 @@ async function onSubmit() {
     access_code: accessCode,
   };
 
-  if (!listOfApartments.value.length) {
+  if (payload.user_type !== 'concierge' && !listOfApartments.value.length) {
     $q.notify({
       color: 'negative',
       textColor: 'white',
@@ -194,7 +194,7 @@ async function onSubmit() {
         try {
           const apartmentExists = await api
             .get(`apartments?code=${item.toUpperCase()}`)
-            .then((resApt) => resApt.data);
+            .then((resApt) => !!resApt.data.length);
 
           if (apartmentExists) {
             throw new Error();
@@ -202,7 +202,7 @@ async function onSubmit() {
 
           await api.post('/apartments', {
             userId: response.data.id,
-            cpf: cpf.value,
+            cpf: response.data.cpf,
             code: item.toUpperCase(),
           });
         } catch {
@@ -224,7 +224,7 @@ async function onSubmit() {
         message: 'Usuário cadastrado!',
       });
 
-      router.push({ name: 'orders' });
+      router.push({ name: 'list-user' });
     })
     .catch(() => {
       $q.notify({

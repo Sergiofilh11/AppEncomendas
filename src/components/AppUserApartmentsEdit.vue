@@ -127,6 +127,7 @@ export default {
       rowsPerPage: 5,
       style: 'max-width: 50px',
       headerStyle: 'max-width: 50px',
+      userData: null,
     };
   },
   components: {
@@ -143,8 +144,10 @@ export default {
       }
     },
   },
+
   setup() {
     const route = useRoute();
+
     const $q = useQuasar();
     const rows = ref([]);
     const nextPage = ref(2);
@@ -155,6 +158,14 @@ export default {
     const opcoes = ref([]);
     const editUser = reactive({});
     const editClickedUser = ref();
+    let userData = null;
+
+    async function setUserData() {
+      const { userId } = route.query;
+      userData = await api
+        .get(`/users?id=${userId}`)
+        .then((response) => response.data[0]);
+    }
 
     const showEdit = (value) => {
       editUser.code = value.row.code;
@@ -192,7 +203,7 @@ export default {
     const edit = async () => {
       loading.value = true;
 
-      const apartmentExists = apartmentAlreadyExist(editUser.code);
+      const apartmentExists = await apartmentAlreadyExist(editUser.code);
 
       if (apartmentExists) {
         $q.notify({
@@ -233,10 +244,10 @@ export default {
       labelSubmitApartment.value = 'Registrar';
     };
 
-    const createApartments = () => {
+    const createApartments = async () => {
       loading.value = true;
 
-      const apartmentExists = apartmentAlreadyExist(editUser.code);
+      const apartmentExists = await apartmentAlreadyExist(editUser.code);
       if (apartmentExists) {
         $q.notify({
           color: 'negative',
@@ -254,8 +265,8 @@ export default {
 
       api
         .post('apartments', {
-          userId: rows.value[0].userId,
-          cpf: rows.value[0].cpf,
+          userId: userData.id,
+          cpf: userData.cpf,
           code: editUser.code.toUpperCase(),
         })
         .then(async () => {
@@ -283,6 +294,7 @@ export default {
     }
 
     onMounted(() => {
+      setUserData();
       getApartments();
     });
 
@@ -305,6 +317,7 @@ export default {
       createApartments,
       crudApartment,
       showCreateApartments,
+      route,
     };
   },
 };

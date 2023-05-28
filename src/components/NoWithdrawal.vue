@@ -10,6 +10,7 @@
           :rows="rows"
           :columns="columns"
           row-key="users"
+          :rows-per-page-options="[0]"
         >
           <template v-slot:body="props">
             <q-tr :props="props">

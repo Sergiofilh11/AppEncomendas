@@ -1,13 +1,105 @@
 {
-  "orders": [],
-  "apartments": [],
+  "orders": [
+    {
+      "identity": "Caixa Pichau",
+      "recipient": 5,
+      "receipt_date": "28/05/2023",
+      "userId": 6,
+      "date_withdrawal": "28/05/2023",
+      "apartmentId": 2,
+      "id": 1
+    },
+    {
+      "identity": "Caixa de som JBL",
+      "recipient": 5,
+      "receipt_date": "28/05/2023",
+      "userId": "",
+      "date_withdrawal": "",
+      "apartmentId": 2,
+      "id": 2
+    },
+    {
+      "identity": "Monitor ultrawide 32'",
+      "recipient": 5,
+      "receipt_date": "28/05/2023",
+      "userId": "",
+      "date_withdrawal": "",
+      "apartmentId": 4,
+      "id": 3
+    },
+    {
+      "identity": "Caixa de fone de ouvido Edifier",
+      "recipient": 5,
+      "receipt_date": "28/05/2023",
+      "userId": "",
+      "date_withdrawal": "",
+      "apartmentId": 3,
+      "id": 4
+    },
+    {
+      "identity": "Caixa Kabum",
+      "recipient": 4,
+      "receipt_date": "28/05/2023",
+      "userId": "",
+      "date_withdrawal": "",
+      "apartmentId": 1,
+      "id": 5
+    }
+  ],
+  "apartments": [
+    {
+      "userId": 4,
+      "cpf": "846.489.970-45",
+      "code": "1A",
+      "id": 1
+    },
+    {
+      "userId": 6,
+      "cpf": "648.762.812-32",
+      "code": "12A",
+      "id": 2
+    },
+    {
+      "userId": 6,
+      "cpf": "648.762.812-32",
+      "code": "13A",
+      "id": 3
+    },
+    {
+      "userId": 7,
+      "cpf": "974.682.309-23",
+      "code": "435AB",
+      "id": 4
+    }
+  ],
   "users": [
     {
-      "id": 4,
       "name": "John Cena",
-      "access_code": "1234qwe",
-      "cpf": "846.489.970-46",
-      "user_type": "syndicate"
+      "cpf": "846.489.970-45",
+      "user_type": "syndicate",
+      "access_code": "123qwe",
+      "id": 4
+    },
+    {
+      "name": "Ramiro Rodrigues",
+      "cpf": "036.529.376-12",
+      "user_type": "concierge",
+      "access_code": "b0342d02dbe3e47c7653fbaba4bda876",
+      "id": 5
+    },
+    {
+      "name": "Adenor Tite",
+      "cpf": "648.762.812-32",
+      "user_type": "tenant",
+      "access_code": "",
+      "id": 6
+    },
+    {
+      "name": "Felipe Santos",
+      "cpf": "974.682.309-23",
+      "user_type": "tenant",
+      "access_code": "",
+      "id": 7
     }
   ]
 }

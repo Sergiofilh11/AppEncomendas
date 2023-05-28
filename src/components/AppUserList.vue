@@ -213,13 +213,13 @@ const columns = [
     label: 'Tipo de usuário',
     align: 'left',
     field: (row) => {
-      if (row.user_type === 'tenant') {
-        return 'Inquilino';
-      }
-      if (row.user_type === 'syndicate') {
-        return 'Sindico';
-      }
-      return 'Porteiro';
+      const userMaps = {
+        tenant: 'Inquilino',
+        syndicate: 'Síndico',
+        concierge: 'Porteiro',
+      };
+
+      return userMaps[row.user_type] ?? '';
     },
     format: (val) => `${val}`,
     sortable: true,
@@ -317,7 +317,7 @@ export default {
     const edit = () => {
       loading.value = true;
       api
-        .put(`/users/${editUser.id}`, {
+        .patch(`/users/${editUser.id}`, {
           name: editUser.name,
           cpf: editUser.cpf,
         })
