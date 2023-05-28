@@ -169,53 +169,109 @@ export default {
           `/apartments?userId=${route.query.userId}`,
         );
         rows.value = response.data;
-      } catch (error) {
-        console.error('Erro ao carregar os apartamentos:', error);
+      } catch {
+        $q.notify({
+          color: 'negative',
+          textColor: 'white',
+          icon: 'report_problem',
+          position: 'top',
+          timeout: 4000,
+          message: 'Erro ao carregar os apartamentos:',
+        });
       }
     }
 
-    const edit = () => {
+    async function apartmentAlreadyExist(apartmentCode) {
+      const apartmentExists = await api
+        .get(`/apartments?code=${apartmentCode}`)
+        .then((response) => response.data.length);
+
+      return !!apartmentExists;
+    }
+
+    const edit = async () => {
       loading.value = true;
+
+      const apartmentExists = apartmentAlreadyExist(editUser.code);
+
+      if (apartmentExists) {
+        $q.notify({
+          color: 'negative',
+          textColor: 'white',
+          icon: 'report_problem',
+          position: 'top',
+          timeout: 4000,
+          message: 'Apartamento já cadastrado:',
+        });
+
+        loading.value = false;
+        dialogApartments.value = false;
+
+        return;
+      }
+
       api
         .patch(`/apartments/${editClickedUser.value}`, {
-          code: editUser.code,
+          code: editUser.code.toUpperCase(),
         })
-        .then(() => {
+        .then(async () => {
           $q.notify({
             color: 'green-4',
             textColor: 'white',
             icon: 'cloud_done',
             message: 'Apartamento editado com sucesso!',
           });
+
           dialogApartments.value = false;
-          getApartments();
+          await getApartments();
           loading.value = false;
         });
     };
+
     const showCreateApartments = () => {
       dialogApartments.value = true;
       labelSubmitApartment.value = 'Registrar';
     };
+
     const createApartments = () => {
       loading.value = true;
+
+      const apartmentExists = apartmentAlreadyExist(editUser.code);
+      if (apartmentExists) {
+        $q.notify({
+          color: 'negative',
+          textColor: 'white',
+          icon: 'report_problem',
+          position: 'top',
+          timeout: 4000,
+          message: 'Apartamento já cadastrado:',
+        });
+
+        loading.value = false;
+
+        return;
+      }
+
       api
         .post('apartments', {
           userId: rows.value[0].userId,
           cpf: rows.value[0].cpf,
-          code: editUser.code,
+          code: editUser.code.toUpperCase(),
         })
-        .then(() => {
+        .then(async () => {
           $q.notify({
             color: 'green-4',
             textColor: 'white',
             icon: 'cloud_done',
             message: 'Apartamento registrado com sucesso!',
           });
+
           dialogApartments.value = false;
-          getApartments();
+          await getApartments();
           loading.value = false;
         });
     };
+
     function crudApartment() {
       switch (labelSubmitApartment.value) {
         case 'Editar':

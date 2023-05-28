@@ -63,7 +63,7 @@ export default defineComponent({
   name: 'HistoricOrders',
   setup() {
     const store = userStore();
-    const apartmentCode = store.getApartmentCode;
+    const storedApartmentId = store.getApartmentId;
     const rows = ref([]);
     const users = ref([]);
     const formatDate = (date) => {
@@ -78,8 +78,8 @@ export default defineComponent({
 
     onMounted(() => {
       let urlToSend = '/orders?_expand=user';
-      if (apartmentCode) {
-        urlToSend += `&code=${apartmentCode}`;
+      if (storedApartmentId) {
+        urlToSend += `&apartmentId=${storedApartmentId}`;
       }
 
       api.get(urlToSend).then((response) => {

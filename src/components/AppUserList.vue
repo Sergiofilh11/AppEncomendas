@@ -43,26 +43,48 @@
                 dense
                 @click="showViewModal(props.row.apartments)"
               />
-              <!-- Editar -->
-              <q-btn
-                class="q-mx-sm"
-                size="sm"
-                :icon="mdiGreasePencil"
-                color="primary"
-                round
-                dense
-                @click="showEdit(props)"
-              />
-              <q-btn
-                class="q-mx-sm"
-                size="sm"
-                color="red"
-                :icon="mdiDelete"
-                round
-                dense
-                @click="showDialogDelete(props)"
-              />
-              <!-- Excluir -->
+              <template v-if="canExcludeSyndicate(props.row.user_type)">
+                <!-- Editar -->
+                <q-btn
+                  class="q-mx-sm"
+                  size="sm"
+                  :icon="mdiGreasePencil"
+                  color="primary"
+                  round
+                  dense
+                  @click="showEdit(props)"
+                />
+                <!-- Excluir -->
+                <q-btn
+                  class="q-mx-sm"
+                  size="sm"
+                  color="red"
+                  :icon="mdiDelete"
+                  round
+                  dense
+                  @click="showDialogDelete(props)"
+                />
+              </template>
+              <template v-else>
+                <q-btn
+                  class="q-mx-sm"
+                  size="sm"
+                  :icon="mdiGreasePencil"
+                  color="primary"
+                  round
+                  dense
+                  disable
+                />
+                <q-btn
+                  class="q-mx-sm"
+                  size="sm"
+                  color="red"
+                  :icon="mdiDelete"
+                  round
+                  dense
+                  disable
+                />
+              </template>
             </q-td>
           </q-tr>
           <q-tr v-show="props.expand" :props="props"> </q-tr>
@@ -164,6 +186,7 @@ import {
   useQuasar,
 } from 'quasar';
 import { useRouter } from 'vue-router';
+import userRulesMixin from '../mixins/userRulesMixin';
 
 const columns = [
   {
@@ -220,7 +243,7 @@ export default {
     QBtn,
     QOptionGroup,
   },
-
+  mixins: [userRulesMixin],
   methods: {
     changePage(page) {
       this.currentPage = page;
@@ -235,6 +258,7 @@ export default {
   },
   setup() {
     const router = useRouter();
+
     const $q = useQuasar();
     const rows = ref([]);
     const nextPage = ref(2);

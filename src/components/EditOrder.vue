@@ -55,6 +55,7 @@ const apartmentData = ref([]);
 const receptor = ref(null);
 
 const route = useRoute();
+
 const { id } = route.params;
 
 const router = useRouter();
@@ -78,10 +79,7 @@ async function onSubmit() {
         message: 'Encomenda editada com sucesso!',
       });
 
-      router.push({
-        name: 'orders',
-        query: { apartmentId: oldApartmentId.value },
-      });
+      router.go(-1);
     })
     .catch(() => {
       $q.notify({

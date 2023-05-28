@@ -170,7 +170,7 @@ export default {
     const listOfUsers = reactive([]);
 
     const store = userStore();
-    const apartmentCode = store.getApartmentCode;
+    const storedApartmentId = store.getApartmentId;
     const userIsAdmin = store.getUserIsAdmin;
 
     const router = useRoute();
@@ -185,8 +185,8 @@ export default {
 
       if (userIsAdmin && apartmentIdByUrl) {
         urlToSend += `&apartmentId=${apartmentIdByUrl}`;
-      } else if (!userIsAdmin && apartmentCode) {
-        urlToSend += `&code=${apartmentCode}`;
+      } else if (!userIsAdmin && storedApartmentId) {
+        urlToSend += `&apartmentId=${storedApartmentId}`;
       }
 
       try {
@@ -236,7 +236,7 @@ export default {
       userIsAdmin,
       selectedOrder,
       $q,
-      apartmentCode,
+      storedApartmentId,
     };
   },
   computed: {

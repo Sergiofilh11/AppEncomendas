@@ -1,33 +1,20 @@
 # Encomendas App (app-encomendas)
 
-A Quasar Project
+Projeto desenvolvido com Quasar 1.0.0, VueJS3, NodeJs ^14.
 
-## Install the dependencies
+## Instalação das dependências
 ```bash
 yarn
-# or
+# ou
 npm install
+
+npm install -g json-server
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Iniciando a aplicação em modo de desenvolvimento.
 ```bash
-quasar dev
+npm run dev
+
+json-server --watch database.json
 ```
 
-
-### Lint the files
-```bash
-yarn lint
-# or
-npm run lint
-```
-
-
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).

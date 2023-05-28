@@ -105,7 +105,7 @@ function onSubmit() {
 
       const data = response.data[0];
       const user = data?.user || data;
-      const { code } = data;
+      const { code, id } = data;
 
       if (isAdmin.value) {
         if (['tenant'].includes(user.user_type)) {
@@ -117,6 +117,7 @@ function onSubmit() {
 
       if (!isAdmin.value && code) {
         store.SET_APARTMENT_CODE(code);
+        store.SET_APARTMENT_ID(id);
       }
 
       const authToken = buildJWTToken({ id: user.id, cpf: user.cpf });
