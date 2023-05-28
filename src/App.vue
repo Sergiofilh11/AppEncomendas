@@ -125,7 +125,7 @@ export default defineComponent({
     getListLinks() {
       const userData = this.store.getUserData;
       const isAdmin = this.store.getUserIsAdmin;
-      console.log(isAdmin);
+
       if (!userData) return [];
 
       return this.linksList.filter(
